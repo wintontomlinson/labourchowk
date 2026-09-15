@@ -1,5 +1,6 @@
 import { AdminTable } from "@/components/admin/AdminTable";
 import { Icon, type IconName } from "@/components/ui/Icon";
+import { ActionButton } from "@/components/ui/ActionButton";
 import { SERVICES } from "@/data/services";
 import { getWorkers } from "@/lib/db";
 import { formatINR, priceModelWord } from "@/lib/utils";
@@ -13,7 +14,7 @@ export default async function AdminServices() {
           <h2 className="font-display text-2xl font-extrabold text-ink">Services</h2>
           <p className="text-ink-600">{SERVICES.length} service categories.</p>
         </div>
-        <button className="btn-primary btn-sm"><Icon name="plus" size={16} /> Add service</button>
+        <ActionButton className="btn-primary btn-sm" toastMessage="New service form coming soon" toastKind="info" loadingLabel="Opening…"><Icon name="plus" size={16} /> Add service</ActionButton>
       </div>
 
       <AdminTable columns={["Service", "Tagline", "Workers", "From", "Popular"]}>

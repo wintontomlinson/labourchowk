@@ -1,4 +1,5 @@
 import { DashCard } from "@/components/dashboard/widgets";
+import { ActionButton } from "@/components/ui/ActionButton";
 
 export default function AdminSettings() {
   return (
@@ -28,7 +29,7 @@ export default function AdminSettings() {
           </div>
         </div>
         <div className="mt-5 flex justify-end">
-          <button className="btn-primary btn-md">Save settings</button>
+          <ActionButton className="btn-primary btn-md" toastMessage="Settings saved">Save settings</ActionButton>
         </div>
       </DashCard>
 

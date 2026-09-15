@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SiteShell } from "@/components/layout/SiteShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState } from "@/components/ui/States";
+import { ActionButton } from "@/components/ui/ActionButton";
 
 export const metadata: Metadata = {
   title: "Careers",
@@ -29,7 +30,7 @@ export default function CareersPage() {
                   <h3 className="font-display text-lg font-bold text-ink">{r.title}</h3>
                   <p className="text-sm text-ink-600">{r.team} · {r.location}</p>
                 </div>
-                <button className="btn-outline btn-sm">View role</button>
+                <ActionButton className="btn-outline btn-sm" toastMessage="Role details coming soon — email careers@labourchowk.example" toastKind="info" loadingLabel="Opening…">View role</ActionButton>
               </div>
             ))}
           </div>

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { AdminTable } from "@/components/admin/AdminTable";
 import { StatusBadge } from "@/components/ui/Badge";
-import { Icon } from "@/components/ui/Icon";
 import { useToast } from "@/components/ui/Toast";
 import { BOOKINGS } from "@/data/bookings";
 import type { Booking, BookingStatus } from "@/lib/types";
@@ -22,12 +21,10 @@ const ALL_STATUSES: BookingStatus[] = [
 export default function AdminBookings() {
   const { toast } = useToast();
   const [rows, setRows] = useState<Booking[]>(BOOKINGS);
-  const [open, setOpen] = useState<string | null>(null);
   const [filter, setFilter] = useState<BookingStatus | "all">("all");
 
   const setStatus = (id: string, status: BookingStatus) => {
     setRows((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
-    setOpen(null);
     toast(`${id} marked as ${STATUS_META[status].label}`, "success");
   };
 
@@ -68,31 +65,21 @@ export default function AdminBookings() {
               <td className="px-4 py-3 text-ink-600">{formatDate(b.date)}</td>
               <td className="px-4 py-3"><StatusBadge label={s.label} className={s.className} /></td>
               <td className="px-4 py-3 text-right">
-                <div className="relative inline-block">
-                  <button
-                    onClick={() => setOpen(open === b.id ? null : b.id)}
-                    className="btn-outline btn-sm"
+                {/* Native select avoids clipping inside the horizontally-scrolling table */}
+                <label className="inline-flex items-center gap-1.5">
+                  <span className="sr-only">Change status for {b.id}</span>
+                  <select
+                    value={b.status}
+                    onChange={(e) => setStatus(b.id, e.target.value as BookingStatus)}
+                    className="h-9 rounded-lg border border-ink/15 bg-white px-2 text-sm font-medium text-ink focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
                   >
-                    Update <Icon name="chevron-down" size={14} />
-                  </button>
-                  {open === b.id && (
-                    <div className="absolute right-0 top-full z-20 mt-1 w-44 rounded-xl border border-ink/10 bg-white p-1 text-left shadow-card-hover animate-scale-in">
-                      {ALL_STATUSES.map((st) => (
-                        <button
-                          key={st}
-                          onClick={() => setStatus(b.id, st)}
-                          className={cn(
-                            "flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm hover:bg-ivory-100",
-                            st === b.status ? "font-semibold text-ink" : "text-ink-700"
-                          )}
-                        >
-                          {STATUS_META[st].label}
-                          {st === b.status && <Icon name="check" size={14} className="text-verified-500" />}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                    {ALL_STATUSES.map((st) => (
+                      <option key={st} value={st}>
+                        {STATUS_META[st].label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
               </td>
             </tr>
           );

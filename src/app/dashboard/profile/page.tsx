@@ -1,5 +1,7 @@
 import { DashCard } from "@/components/dashboard/widgets";
 import { Icon } from "@/components/ui/Icon";
+import { Avatar } from "@/components/ui/Avatar";
+import { ActionButton } from "@/components/ui/ActionButton";
 
 export default function CustomerProfile() {
   return (
@@ -11,13 +13,11 @@ export default function CustomerProfile() {
 
       <DashCard title="Personal details">
         <div className="mb-5 flex items-center gap-4">
-          <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-ivory-200 font-display text-2xl font-extrabold text-ink">
-            A
-          </span>
-          <button className="btn-outline btn-sm">
+          <Avatar name="Amit Verma" size={64} rounded="rounded-2xl" />
+          <ActionButton className="btn-outline btn-sm" toastMessage="Photo upload is coming soon" toastKind="info" loadingLabel="Opening…">
             <Icon name="camera" size={16} />
             Change photo
-          </button>
+          </ActionButton>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
@@ -42,7 +42,7 @@ export default function CustomerProfile() {
           </div>
         </div>
         <div className="mt-5 flex justify-end">
-          <button className="btn-primary btn-md">Save changes</button>
+          <ActionButton className="btn-primary btn-md" toastMessage="Profile updated">Save changes</ActionButton>
         </div>
       </DashCard>
     </div>

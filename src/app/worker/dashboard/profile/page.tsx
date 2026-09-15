@@ -2,6 +2,7 @@ import Link from "next/link";
 import { DashCard } from "@/components/dashboard/widgets";
 import { VerifiedBadge } from "@/components/ui/Badge";
 import { Icon } from "@/components/ui/Icon";
+import { ActionButton } from "@/components/ui/ActionButton";
 import { getWorkerById } from "@/lib/db";
 import { priceLabel } from "@/lib/utils";
 
@@ -26,7 +27,7 @@ export default async function WorkerProfileEdit() {
             R
           </span>
           <div className="flex items-center gap-2">
-            <button className="btn-outline btn-sm"><Icon name="camera" size={16} /> Change photo</button>
+            <ActionButton className="btn-outline btn-sm" toastMessage="Photo upload is coming soon" toastKind="info" loadingLabel="Opening…"><Icon name="camera" size={16} /> Change photo</ActionButton>
             <VerifiedBadge status={worker.verification} size="md" />
           </div>
         </div>
@@ -57,7 +58,7 @@ export default async function WorkerProfileEdit() {
       </DashCard>
 
       <div className="flex justify-end">
-        <button className="btn-primary btn-md">Save changes</button>
+        <ActionButton className="btn-primary btn-md" toastMessage="Profile updated">Save changes</ActionButton>
       </div>
     </div>
   );

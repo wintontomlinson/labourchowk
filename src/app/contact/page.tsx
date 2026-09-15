@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SiteShell } from "@/components/layout/SiteShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Icon, type IconName } from "@/components/ui/Icon";
+import { ActionButton } from "@/components/ui/ActionButton";
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -48,7 +49,7 @@ export default function ContactPage() {
             <label className="label">Message</label>
             <textarea rows={5} className="input h-auto py-3" placeholder="How can we help?" />
           </div>
-          <button type="button" className="btn-primary btn-md mt-4">Send message</button>
+          <ActionButton className="btn-primary btn-md mt-4" toastMessage="Thanks! We'll get back to you soon." loadingLabel="Sending…">Send message</ActionButton>
         </form>
       </div>
     </SiteShell>

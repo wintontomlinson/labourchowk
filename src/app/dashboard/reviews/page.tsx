@@ -34,10 +34,10 @@ export default async function CustomerReviews() {
                   <p className="font-semibold text-ink">{b.workerName}</p>
                   <p className="text-sm text-ink-500">{b.service} · {formatDate(b.date)}</p>
                 </div>
-                <button className="btn-primary btn-sm">
+                <Link href={`/worker/${b.workerId}`} className="btn-primary btn-sm">
                   <Icon name="star" size={15} />
                   Write a review
-                </button>
+                </Link>
               </div>
             ))}
           </div>
@@ -58,7 +58,7 @@ export default async function CustomerReviews() {
             {myReviews.map((r) => (
               <div key={r.id} className="border-b border-ink/[0.06] pb-4 last:border-0">
                 <div className="flex items-center justify-between">
-                  <Link href="#" className="font-semibold text-ink hover:text-amber-600">
+                  <Link href={`/worker/${r.workerId}`} className="font-semibold text-ink hover:text-amber-600">
                     {r.service} worker
                   </Link>
                   <Stars value={r.rating} size={14} />
