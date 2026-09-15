@@ -46,39 +46,40 @@ export function Navbar() {
           : "border-b border-transparent bg-ivory-100"
       )}
     >
-      <div className="container-lc flex h-16 items-center justify-between gap-4">
-        {/* Left: logo (+ mobile location) */}
-        <div className="flex items-center gap-4">
-          <Logo />
-        </div>
+      <div className="container-lc flex h-[68px] items-center gap-3">
+        {/* Left: logo */}
+        <Logo />
 
-        {/* Center: nav (desktop) */}
-        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 lg:flex">
+        {/* Center: nav (desktop) — flex-1 keeps it centred without overlap */}
+        <nav className="hidden flex-1 items-center justify-center gap-1 lg:flex">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={cn(
-                "rounded-lg px-3.5 py-2 text-[15px] font-medium transition-colors",
+                "relative rounded-lg px-3.5 py-2 text-[15px] font-medium transition-colors",
                 isActive(link.href)
                   ? "text-ink"
                   : "text-ink-600 hover:text-ink hover:bg-ink/[0.04]"
               )}
             >
               {link.label}
+              {isActive(link.href) && (
+                <span className="absolute inset-x-3.5 -bottom-[3px] h-0.5 rounded-full bg-amber-500" />
+              )}
             </Link>
           ))}
         </nav>
 
         {/* Right */}
-        <div className="flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-1.5 lg:ml-0">
           {/* Location selector */}
           <div className="relative hidden md:block">
             <button
               onClick={() => setLocOpen((v) => !v)}
-              className="flex items-center gap-1.5 rounded-lg px-2.5 py-2 text-sm font-medium text-ink-700 hover:bg-ink/[0.04]"
+              className="flex items-center gap-1.5 rounded-lg border border-ink/10 px-2.5 py-1.5 text-sm font-medium text-ink-700 transition-colors hover:border-ink/20 hover:bg-ink/[0.03]"
             >
-              <Icon name="pin" size={17} className="text-amber-500" />
+              <Icon name="pin" size={16} className="text-amber-500" />
               {city}
               <Icon name="chevron-down" size={14} className="text-ink-500" />
             </button>
@@ -110,13 +111,14 @@ export function Navbar() {
           >
             For Workers
           </Link>
+          <span className="mx-0.5 hidden h-5 w-px bg-ink/10 lg:block" />
           <Link
             href="/login"
             className="hidden rounded-lg px-3 py-2 text-sm font-medium text-ink-700 hover:bg-ink/[0.04] sm:inline-flex"
           >
             Login
           </Link>
-          <Link href="/find-workers" className="btn-primary btn-sm hidden sm:inline-flex">
+          <Link href="/find-workers" className="btn-primary btn-sm hidden shadow-sm sm:inline-flex">
             Hire a Worker
           </Link>
 

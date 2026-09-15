@@ -9,40 +9,46 @@ import { cn } from "@/lib/utils";
  * The centre dot is the meeting point; the amber arms suggest activity/energy.
  * It reads clearly at small sizes and on both light and dark backgrounds.
  */
-export function LogoMark({ size = 36, className }: { size?: number; className?: string }) {
+export function LogoMark({ size = 38, className }: { size?: number; className?: string }) {
+  // Unique gradient id per render size to avoid SVG id clashes on a page.
+  const gid = `lc-g-${size}`;
   return (
     <span
       className={cn(
-        "relative inline-flex items-center justify-center rounded-[11px] bg-ink shadow-sm",
+        "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-[12px] ring-1 ring-black/5 shadow-[0_2px_8px_rgba(23,20,18,0.18)]",
         className
       )}
       style={{ width: size, height: size }}
     >
-      <svg
-        width={size * 0.62}
-        height={size * 0.62}
-        viewBox="0 0 32 32"
-        fill="none"
-        aria-hidden="true"
-      >
-        {/* four roads / crossroads arms */}
-        <path
-          d="M16 3.5v8M16 20.5v8M3.5 16h8M20.5 16h8"
-          stroke="#e8792b"
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
-        {/* subtle diagonal connectors for a fuller 'chowk' feel */}
-        <path
-          d="M8.5 8.5l3.2 3.2M23.5 8.5l-3.2 3.2M8.5 23.5l3.2-3.2M23.5 23.5l-3.2-3.2"
-          stroke="#e8792b"
-          strokeOpacity="0.4"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
+      <svg width={size} height={size} viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <defs>
+          <linearGradient id={`${gid}-bg`} x1="0" y1="0" x2="40" y2="40">
+            <stop offset="0" stopColor="#242019" />
+            <stop offset="1" stopColor="#0f0d0b" />
+          </linearGradient>
+          <linearGradient id={`${gid}-amber`} x1="8" y1="8" x2="32" y2="32">
+            <stop offset="0" stopColor="#f0a662" />
+            <stop offset="1" stopColor="#e8792b" />
+          </linearGradient>
+        </defs>
+
+        {/* rounded charcoal tile with a soft top highlight */}
+        <rect width="40" height="40" rx="12" fill={`url(#${gid}-bg)`} />
+        <rect width="40" height="20" rx="12" fill="#ffffff" fillOpacity="0.05" />
+
+        {/* chowk / crossroads — four roads meeting */}
+        <g stroke={`url(#${gid}-amber)`} strokeLinecap="round">
+          <path d="M20 6v9M20 25v9M6 20h9M25 20h9" strokeWidth="3.4" />
+          <path
+            d="M11 11l4 4M29 11l-4 4M11 29l4-4M29 29l-4-4"
+            strokeWidth="2.2"
+            strokeOpacity="0.45"
+          />
+        </g>
+
         {/* central meeting point */}
-        <circle cx="16" cy="16" r="4.4" fill="#faf7f2" />
-        <circle cx="16" cy="16" r="2" fill="#e8792b" />
+        <circle cx="20" cy="20" r="5.4" fill="#faf7f2" />
+        <circle cx="20" cy="20" r="2.5" fill={`url(#${gid}-amber)`} />
       </svg>
     </span>
   );
@@ -52,7 +58,7 @@ export function Logo({
   className,
   variant = "dark",
   compact = false,
-  size = 36,
+  size = 38,
 }: {
   className?: string;
   variant?: "dark" | "light";

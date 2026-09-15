@@ -102,30 +102,53 @@ export default async function HomePage() {
           </div>
 
           <div className="hidden lg:block">
-            <div className="relative overflow-hidden rounded-2xl border border-ink/10 shadow-card">
-              <Image
-                src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=900&q=80"
-                alt="Electrician working on a wiring installation"
-                width={900}
-                height={1000}
-                priority
-                sizes="(max-width: 1024px) 0px, 45vw"
-                className="h-full max-h-[520px] w-full object-cover"
-              />
-              {/* Single grounded stat strip along the bottom — no floating glass cards */}
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink via-ink/70 to-transparent px-5 pb-5 pt-16">
-                <div className="grid grid-cols-3 gap-2 text-ivory-100">
-                  {[
-                    { v: "12,000+", l: "Workers" },
-                    { v: "15", l: "Services" },
-                    { v: "4.6★", l: "Avg rating" },
-                  ].map((s) => (
-                    <div key={s.l}>
-                      <p className="font-display text-xl font-extrabold">{s.v}</p>
-                      <p className="text-xs text-ivory-300/80">{s.l}</p>
-                    </div>
-                  ))}
+            {/* Premium collage of real trades — a main portrait + two stacked shots */}
+            <div className="grid grid-cols-5 grid-rows-6 gap-3" style={{ height: 540 }}>
+              <div className="relative col-span-3 row-span-6 overflow-hidden rounded-2xl border border-ink/10 shadow-card">
+                <Image
+                  src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80"
+                  alt="Technician servicing equipment on site"
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 0px, 27vw"
+                  className="object-cover"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink via-ink/60 to-transparent px-4 pb-4 pt-14">
+                  <div className="grid grid-cols-3 gap-2 text-ivory-100">
+                    {[
+                      { v: "12,000+", l: "Workers" },
+                      { v: "15", l: "Services" },
+                      { v: "4.6★", l: "Avg rating" },
+                    ].map((s) => (
+                      <div key={s.l}>
+                        <p className="font-display text-lg font-extrabold leading-none">{s.v}</p>
+                        <p className="mt-0.5 text-[11px] text-ivory-300/80">{s.l}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
+              </div>
+              <div className="relative col-span-2 row-span-3 overflow-hidden rounded-2xl border border-ink/10 shadow-card">
+                <Image
+                  src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80"
+                  alt="Carpenter measuring timber"
+                  fill
+                  sizes="(max-width: 1024px) 0px, 18vw"
+                  className="object-cover"
+                />
+              </div>
+              <div className="relative col-span-2 row-span-3 overflow-hidden rounded-2xl border border-ink/10 shadow-card">
+                <Image
+                  src="https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=600&q=80"
+                  alt="Painter at work on a wall"
+                  fill
+                  sizes="(max-width: 1024px) 0px, 18vw"
+                  className="object-cover"
+                />
+                <span className="absolute bottom-2 left-2 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-semibold text-ink shadow-sm">
+                  <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-verified-500 align-middle" />
+                  Available near you
+                </span>
               </div>
             </div>
           </div>
