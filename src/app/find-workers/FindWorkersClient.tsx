@@ -7,6 +7,7 @@ import { Icon } from "@/components/ui/Icon";
 import { EmptyState } from "@/components/ui/States";
 import { Map } from "@/components/map/Map";
 import { workerCoords, cityCenter, DELHI_CENTER } from "@/lib/geo";
+import { useGeolocation, distanceKm } from "@/lib/useGeolocation";
 import { CITIES } from "@/data/cities";
 import { SERVICES } from "@/data/services";
 import {
@@ -16,6 +17,7 @@ import {
   type SortKey,
   type WorkerFilters,
 } from "@/lib/queries";
+import type { LatLng } from "@/lib/types";
 import { cn, formatINR } from "@/lib/utils";
 
 const DISTANCES = [2, 5, 10, 25];
@@ -36,23 +38,54 @@ export function FindWorkersClient() {
   const [maxPrice, setMaxPrice] = useState<number>(maxP);
   const [view, setView] = useState<"list" | "map">("list");
 
-  const results = useMemo(
-    () => filterWorkers({ ...filters, maxPrice: maxPrice < maxP ? maxPrice : undefined }, sort),
-    [filters, sort, maxPrice, maxP]
+  // User location: seeded from URL (?lat&lng from the homepage) or detected here.
+  const urlLat = params.get("lat");
+  const urlLng = params.get("lng");
+  const [userLoc, setUserLoc] = useState<LatLng | null>(
+    urlLat && urlLng ? { lat: Number(urlLat), lng: Number(urlLng) } : null
   );
-
-  const mapCenter = filters.city ? cityCenter(filters.city) : DELHI_CENTER;
-  const mapPins = results.map((w) => {
-    const c = workerCoords(w);
-    return {
-      id: w.id,
-      lat: c.lat,
-      lng: c.lng,
-      title: w.name,
-      subtitle: `${w.profession} · ${w.area}`,
-      href: `/worker/${w.id}`,
-    };
+  const geo = useGeolocation((s) => {
+    if (s.coords) {
+      setUserLoc(s.coords);
+      if (s.city) setFilters((f) => ({ ...f, city: s.city!.slug }));
+      setView("map");
+    }
   });
+
+  const results = useMemo(() => {
+    const list = filterWorkers(
+      { ...filters, maxPrice: maxPrice < maxP ? maxPrice : undefined },
+      sort
+    );
+    // When we know the user's location, sort by real distance from them.
+    if (userLoc) {
+      return [...list].sort(
+        (a, b) =>
+          distanceKm(userLoc, workerCoords(a)) - distanceKm(userLoc, workerCoords(b))
+      );
+    }
+    return list;
+  }, [filters, sort, maxPrice, maxP, userLoc]);
+
+  const mapCenter = userLoc ?? (filters.city ? cityCenter(filters.city) : DELHI_CENTER);
+  const mapPins = [
+    ...(userLoc
+      ? [{ id: "__you", lat: userLoc.lat, lng: userLoc.lng, title: "You are here", isUser: true as const }]
+      : []),
+    ...results.map((w) => {
+      const c = workerCoords(w);
+      return {
+        id: w.id,
+        lat: c.lat,
+        lng: c.lng,
+        title: w.name,
+        subtitle: userLoc
+          ? `${w.profession} · ~${distanceKm(userLoc, c).toFixed(1)} km away`
+          : `${w.profession} · ${w.area}`,
+        href: `/worker/${w.id}`,
+      };
+    }),
+  ];
 
   function update<K extends keyof WorkerFilters>(key: K, value: WorkerFilters[K]) {
     setFilters((f) => ({ ...f, [key]: f[key] === value ? undefined : value }));
@@ -179,7 +212,46 @@ export function FindWorkersClient() {
             ))}
           </select>
         </div>
+        <button
+          type="button"
+          onClick={geo.locate}
+          disabled={geo.status === "locating"}
+          className="btn-outline btn-md shrink-0 justify-center sm:w-auto"
+        >
+          {geo.status === "locating" ? (
+            <>
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-ink/20 border-t-amber-500" />
+              Locating…
+            </>
+          ) : (
+            <>
+              <Icon name="pin" size={17} className="text-amber-500" />
+              Use my location
+            </>
+          )}
+        </button>
       </div>
+
+      {/* Location status / active banner */}
+      {geo.message && geo.status !== "success" && (
+        <p className="mt-2 text-xs text-danger-500">{geo.message}</p>
+      )}
+      {userLoc && (
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-verified-100 bg-verified-50/60 px-3.5 py-2.5">
+          <span className="inline-flex items-center gap-1.5 text-sm font-medium text-verified-700">
+            <Icon name="pin" size={15} /> Showing workers nearest to your location
+          </span>
+          <button
+            onClick={() => {
+              setUserLoc(null);
+              geo.reset();
+            }}
+            className="text-xs font-semibold text-verified-700 underline-offset-2 hover:underline"
+          >
+            Clear
+          </button>
+        </div>
+      )}
 
       <div className="mt-6 flex gap-8">
         {/* Desktop sidebar */}

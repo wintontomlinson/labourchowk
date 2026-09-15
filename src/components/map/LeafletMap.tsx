@@ -13,6 +13,8 @@ export interface MapPin {
   title: string;
   subtitle?: string;
   href?: string;
+  /** render as the "you are here" marker */
+  isUser?: boolean;
 }
 
 /** Custom amber pin — avoids the default Leaflet marker asset (which 404s under bundlers). */
@@ -30,6 +32,22 @@ function pinIcon(highlight = false) {
     iconSize: [30, 40],
     iconAnchor: [15, 40],
     popupAnchor: [0, -36],
+  });
+}
+
+/** Pulsing "you are here" dot. */
+function userIcon() {
+  const html = `
+    <span style="position:relative;display:block;width:20px;height:20px;">
+      <span style="position:absolute;inset:0;border-radius:9999px;background:#3f8f5f;opacity:0.25;animation:lcpulse 1.8s ease-out infinite;"></span>
+      <span style="position:absolute;inset:5px;border-radius:9999px;background:#3f8f5f;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.3);"></span>
+    </span>`;
+  return L.divIcon({
+    html,
+    className: "lc-user-pin",
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
+    popupAnchor: [0, -10],
   });
 }
 
@@ -76,7 +94,12 @@ export default function LeafletMap({
         />
       )}
       {pins.map((p, i) => (
-        <Marker key={p.id} position={[p.lat, p.lng]} icon={pinIcon(i === 0 && pins.length === 1)}>
+        <Marker
+          key={p.id}
+          position={[p.lat, p.lng]}
+          icon={p.isUser ? userIcon() : pinIcon(pins.length === 1 && i === 0)}
+          zIndexOffset={p.isUser ? 1000 : 0}
+        >
           <Popup>
             <div className="min-w-[140px]">
               <p className="text-[13px] font-semibold text-ink">{p.title}</p>
