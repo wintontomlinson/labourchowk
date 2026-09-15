@@ -91,6 +91,20 @@ export async function getReviewsForWorker(workerId: string): Promise<Review[]> {
   }
 }
 
+/** All reviews (newest first) — used by the admin moderation screen. */
+export async function getAllReviews(limit = 100): Promise<Review[]> {
+  if (!hasDatabase) return REVIEWS;
+  try {
+    const rows = await prisma.review.findMany({
+      orderBy: { createdAt: "desc" },
+      take: limit,
+    });
+    return rows.length ? rows.map(toReview) : REVIEWS;
+  } catch {
+    return REVIEWS;
+  }
+}
+
 export async function ratingDistributionFor(
   workerId: string
 ): Promise<Record<number, number>> {

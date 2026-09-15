@@ -1,24 +1,25 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
-import { WorkerCard } from "@/components/worker/WorkerCard";
+import { useEffect, useMemo, useState } from "react";
+import { WorkerCard, WorkerCardSkeleton } from "@/components/worker/WorkerCard";
 import { Icon } from "@/components/ui/Icon";
-import { EmptyState } from "@/components/ui/States";
+import { EmptyState, ErrorState } from "@/components/ui/States";
 import { Map } from "@/components/map/Map";
 import { workerCoords, cityCenter, DELHI_CENTER } from "@/lib/geo";
 import { useGeolocation, distanceKm } from "@/lib/useGeolocation";
 import { CITIES } from "@/data/cities";
 import { SERVICES } from "@/data/services";
 import {
-  filterWorkers,
-  priceRange,
+  applyWorkerFilters,
   SORT_OPTIONS,
   type SortKey,
   type WorkerFilters,
 } from "@/lib/queries";
-import type { LatLng } from "@/lib/types";
+import type { LatLng, Worker } from "@/lib/types";
 import { cn, formatINR } from "@/lib/utils";
+
+const PRICE_CAP = 900; // slider max (matches the priciest demo workers)
 
 const DISTANCES = [2, 5, 10, 25];
 const RATINGS = [4.5, 4, 3.5];
@@ -26,7 +27,13 @@ const EXPERIENCE = [2, 5, 10];
 
 export function FindWorkersClient() {
   const params = useSearchParams();
-  const { max: maxP } = priceRange();
+  const maxP = PRICE_CAP;
+
+  // Workers are loaded from the database via the API so newly-registered
+  // workers show up here. Filtering/sorting then happens instantly client-side.
+  const [allWorkers, setAllWorkers] = useState<Worker[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   const [filters, setFilters] = useState<WorkerFilters>({
     q: params.get("q") ?? undefined,
@@ -37,6 +44,20 @@ export function FindWorkersClient() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [maxPrice, setMaxPrice] = useState<number>(maxP);
   const [view, setView] = useState<"list" | "map">("list");
+
+  function loadWorkers() {
+    setLoading(true);
+    setLoadError(false);
+    fetch("/api/workers")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((d) => setAllWorkers(d.workers ?? []))
+      .catch(() => setLoadError(true))
+      .finally(() => setLoading(false));
+  }
+
+  useEffect(() => {
+    loadWorkers();
+  }, []);
 
   // User location: seeded from URL (?lat&lng from the homepage) or detected here.
   const urlLat = params.get("lat");
@@ -53,7 +74,8 @@ export function FindWorkersClient() {
   });
 
   const results = useMemo(() => {
-    const list = filterWorkers(
+    const list = applyWorkerFilters(
+      allWorkers,
       { ...filters, maxPrice: maxPrice < maxP ? maxPrice : undefined },
       sort
     );
@@ -65,7 +87,7 @@ export function FindWorkersClient() {
       );
     }
     return list;
-  }, [filters, sort, maxPrice, maxP, userLoc]);
+  }, [allWorkers, filters, sort, maxPrice, maxP, userLoc]);
 
   const mapCenter = userLoc ?? (filters.city ? cityCenter(filters.city) : DELHI_CENTER);
   const mapPins = [
@@ -273,8 +295,14 @@ export function FindWorkersClient() {
         <div className="min-w-0 flex-1">
           <div className="mb-4 flex items-center justify-between gap-3">
             <p className="text-sm text-ink-600">
-              <span className="font-semibold text-ink">{results.length}</span> worker
-              {results.length !== 1 ? "s" : ""} found
+              {loading ? (
+                "Loading workers…"
+              ) : (
+                <>
+                  <span className="font-semibold text-ink">{results.length}</span> worker
+                  {results.length !== 1 ? "s" : ""} found
+                </>
+              )}
             </p>
             <div className="flex items-center gap-2">
               <button
@@ -329,7 +357,19 @@ export function FindWorkersClient() {
             </div>
           </div>
 
-          {results.length === 0 ? (
+          {loading ? (
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <WorkerCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : loadError ? (
+            <ErrorState
+              title="Couldn't load workers"
+              description="There was a problem fetching workers. Please try again."
+              onRetry={loadWorkers}
+            />
+          ) : results.length === 0 ? (
             <EmptyState
               icon="search"
               title="No workers found"

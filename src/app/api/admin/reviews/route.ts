@@ -1,7 +1,19 @@
 import { NextResponse } from "next/server";
-import { updateReviewStatus } from "@/lib/db";
+import { updateReviewStatus, getAllReviews } from "@/lib/db";
+
+export const dynamic = "force-dynamic";
 
 const VALID = ["published", "flagged", "hidden"] as const;
+
+/** GET /api/admin/reviews — all reviews for moderation. */
+export async function GET() {
+  try {
+    const reviews = await getAllReviews();
+    return NextResponse.json({ reviews });
+  } catch {
+    return NextResponse.json({ error: "Failed to load reviews" }, { status: 500 });
+  }
+}
 
 /** PATCH /api/admin/reviews — moderate a review (publish/hide/flag). */
 export async function PATCH(request: Request) {

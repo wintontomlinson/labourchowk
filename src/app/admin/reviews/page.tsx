@@ -1,21 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Stars } from "@/components/ui/Rating";
 import { StatusBadge } from "@/components/ui/Badge";
 import { Icon } from "@/components/ui/Icon";
+import { EmptyState, ErrorState } from "@/components/ui/States";
 import { useToast } from "@/components/ui/Toast";
-import { REVIEWS } from "@/data/reviews";
-import { getWorker } from "@/data/workers";
 import type { Review } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 
 export default function AdminReviews() {
   const { toast } = useToast();
-  // Seed one flagged review for the demo moderation flow.
-  const [rows, setRows] = useState<Review[]>(
-    REVIEWS.map((r, i) => ({ ...r, status: i === 2 ? "flagged" : r.status ?? "published" }))
-  );
+  const [rows, setRows] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  function load() {
+    setLoading(true);
+    setError(false);
+    fetch("/api/admin/reviews")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((d) => setRows(d.reviews ?? []))
+      .catch(() => setError(true))
+      .finally(() => setLoading(false));
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
 
   const setStatus = (id: string, status: Review["status"], msg: string) => {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
@@ -34,16 +46,25 @@ export default function AdminReviews() {
         <p className="text-ink-600">Review and moderate customer feedback.</p>
       </div>
 
-      <div className="space-y-3">
-        {rows.map((r) => {
-          const worker = getWorker(r.workerId);
-          return (
+      {loading ? (
+        <div className="space-y-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="skeleton h-24 rounded-card" />
+          ))}
+        </div>
+      ) : error ? (
+        <ErrorState title="Couldn't load reviews" onRetry={load} />
+      ) : rows.length === 0 ? (
+        <EmptyState icon="star" title="No reviews yet" description="Customer reviews will appear here for moderation." />
+      ) : (
+        <div className="space-y-3">
+          {rows.map((r) => (
             <div key={r.id} className="rounded-card border border-ink/[0.07] bg-white p-4 shadow-card">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <p className="font-semibold text-ink">{r.customerName}</p>
-                    <span className="text-sm text-ink-500">→ {worker?.name}</span>
+                    <span className="text-sm text-ink-500">· {r.service}</span>
                     {r.status === "flagged" && <StatusBadge label="Flagged" className="bg-danger-50 text-danger-600" />}
                     {r.status === "hidden" && <StatusBadge label="Hidden" className="bg-ink/10 text-ink-600" />}
                   </div>
@@ -71,9 +92,9 @@ export default function AdminReviews() {
               </div>
               <p className="mt-2.5 text-[15px] text-ink-700">{r.text}</p>
             </div>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,6 +1,35 @@
 import { NextResponse } from "next/server";
-import { createWorker } from "@/lib/db";
+import { createWorker, searchWorkers } from "@/lib/db";
 import { getService } from "@/data/services";
+import type { SortKey, WorkerFilters } from "@/lib/queries";
+
+// Always read fresh from the DB (so newly-added workers show up in search).
+export const dynamic = "force-dynamic";
+
+/** GET /api/workers — DB-backed search with filters + sort. */
+export async function GET(request: Request) {
+  try {
+    const sp = new URL(request.url).searchParams;
+    const num = (k: string) => (sp.get(k) != null ? Number(sp.get(k)) : undefined);
+
+    const filters: WorkerFilters = {
+      q: sp.get("q") || undefined,
+      service: sp.get("service") || undefined,
+      city: sp.get("city") || undefined,
+      maxDistance: num("maxDistance"),
+      minRating: num("minRating"),
+      minExperience: num("minExperience"),
+      maxPrice: num("maxPrice"),
+      availableToday: sp.get("availableToday") === "true" || undefined,
+      verifiedOnly: sp.get("verifiedOnly") === "true" || undefined,
+    };
+    const sort = (sp.get("sort") as SortKey) || "recommended";
+    const workers = await searchWorkers(filters, sort);
+    return NextResponse.json({ workers });
+  } catch {
+    return NextResponse.json({ error: "Failed to load workers" }, { status: 500 });
+  }
+}
 
 /** POST /api/workers — register a new worker from the onboarding flow. */
 export async function POST(request: Request) {
