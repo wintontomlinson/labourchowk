@@ -101,35 +101,34 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <Reveal className="relative hidden lg:block">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-ivory-200 shadow-card-hover">
+          <div className="hidden lg:block">
+            <div className="relative overflow-hidden rounded-2xl border border-ink/10 shadow-card">
               <Image
                 src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=900&q=80"
-                alt="Skilled worker at a job site"
-                fill
+                alt="Electrician working on a wiring installation"
+                width={900}
+                height={1000}
                 priority
                 sizes="(max-width: 1024px) 0px, 45vw"
-                className="object-cover"
+                className="h-full max-h-[520px] w-full object-cover"
               />
-              <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-ink/70 to-transparent" />
-            </div>
-            {/* Floating trust card */}
-            <div className="absolute -bottom-5 -left-5 w-56 rounded-2xl border border-ink/10 bg-white p-4 shadow-card-hover">
-              <div className="flex items-center gap-2">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-verified-50 text-verified-600">
-                  <Icon name="check" size={18} strokeWidth={2.4} />
-                </span>
-                <div>
-                  <p className="text-sm font-bold text-ink">Booking confirmed</p>
-                  <p className="text-xs text-ink-500">Electrician · 10:00 AM</p>
+              {/* Single grounded stat strip along the bottom — no floating glass cards */}
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink via-ink/70 to-transparent px-5 pb-5 pt-16">
+                <div className="grid grid-cols-3 gap-2 text-ivory-100">
+                  {[
+                    { v: "12,000+", l: "Workers" },
+                    { v: "15", l: "Services" },
+                    { v: "4.6★", l: "Avg rating" },
+                  ].map((s) => (
+                    <div key={s.l}>
+                      <p className="font-display text-xl font-extrabold">{s.v}</p>
+                      <p className="text-xs text-ivory-300/80">{s.l}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
-            <div className="absolute -right-4 top-8 rounded-2xl border border-ink/10 bg-white px-4 py-3 shadow-card-hover">
-              <p className="font-display text-2xl font-extrabold text-ink">12,000+</p>
-              <p className="text-xs text-ink-500">Workers listed</p>
-            </div>
-          </Reveal>
+          </div>
         </div>
       </section>
 

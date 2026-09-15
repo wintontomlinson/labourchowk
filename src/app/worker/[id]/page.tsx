@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Avatar } from "@/components/ui/Avatar";
 import type { Metadata } from "next";
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Icon } from "@/components/ui/Icon";
@@ -60,13 +61,11 @@ export default async function WorkerProfilePage({
         {/* MAIN */}
         <div className="min-w-0 space-y-8">
           {/* Header */}
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
-            <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-2xl bg-ivory-200">
-              <Image src={worker.photo} alt={worker.name} fill sizes="112px" className="object-cover" priority />
-            </div>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-5">
+            <Avatar name={worker.name} size={96} rounded="rounded-2xl" className="h-20 w-20 text-3xl sm:h-24 sm:w-24" />
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2.5">
-                <h1 className="font-display text-[26px] font-extrabold text-ink sm:text-[30px]">
+                <h1 className="font-display text-[24px] font-extrabold text-ink sm:text-[30px]">
                   {worker.name}
                 </h1>
                 <VerifiedBadge status={worker.verification} size="md" />

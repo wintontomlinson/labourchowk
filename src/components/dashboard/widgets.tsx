@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Icon, type IconName } from "@/components/ui/Icon";
+import { Avatar } from "@/components/ui/Avatar";
 import { StatusBadge } from "@/components/ui/Badge";
 import type { Booking } from "@/lib/types";
 import { STATUS_META, cn, formatDate, formatINR, priceLabel } from "@/lib/utils";
@@ -66,10 +66,8 @@ export function DashCard({
 export function BookingRow({ booking, view = "customer" }: { booking: Booking; view?: "customer" | "worker" }) {
   const status = STATUS_META[booking.status];
   return (
-    <div className="flex items-center gap-3.5 rounded-xl border border-ink/[0.07] bg-white p-3.5 transition-colors hover:border-ink/15">
-      <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-ivory-200">
-        <Image src={booking.workerPhoto} alt={booking.workerName} fill sizes="48px" className="object-cover" />
-      </div>
+    <div className="flex items-center gap-3 rounded-xl border border-ink/[0.07] bg-white p-3 transition-colors hover:border-ink/15 sm:gap-3.5 sm:p-3.5">
+      <Avatar name={view === "customer" ? booking.workerName : booking.customerName} size={48} />
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
           <p className="font-semibold text-ink">

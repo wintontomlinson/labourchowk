@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
+import { Avatar } from "@/components/ui/Avatar";
 import { useToast } from "@/components/ui/Toast";
 import { EmptyState } from "@/components/ui/States";
 import { WORKERS } from "@/data/workers";
@@ -34,9 +34,7 @@ export default function AdminVerification() {
             return (
               <div key={w.id} className="rounded-card border border-ink/[0.07] bg-white p-4 shadow-card">
                 <div className="flex items-center gap-3">
-                  <div className="relative h-12 w-12 overflow-hidden rounded-xl bg-ivory-200">
-                    <Image src={w.photo} alt={w.name} fill sizes="48px" className="object-cover" />
-                  </div>
+                  <Avatar name={w.name} size={48} />
                   <div>
                     <p className="font-semibold text-ink">{w.name}</p>
                     <p className="text-sm text-ink-500">{w.profession} · {city}</p>

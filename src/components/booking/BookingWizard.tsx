@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { Worker } from "@/lib/types";
+import { Avatar } from "@/components/ui/Avatar";
 import { Icon } from "@/components/ui/Icon";
 import { RatingInline } from "@/components/ui/Rating";
 import { VerifiedBadge } from "@/components/ui/Badge";
@@ -382,9 +382,7 @@ export function BookingWizard({ worker }: { worker: Worker }) {
         <aside className="order-first lg:order-last">
           <div className="rounded-card border border-ink/[0.07] bg-white p-4 shadow-card lg:sticky lg:top-20">
             <div className="flex items-center gap-3">
-              <div className="relative h-14 w-14 overflow-hidden rounded-xl bg-ivory-200">
-                <Image src={worker.photo} alt={worker.name} fill sizes="56px" className="object-cover" />
-              </div>
+              <Avatar name={worker.name} size={56} />
               <div className="min-w-0">
                 <p className="truncate font-display font-bold text-ink">{worker.name}</p>
                 <p className="text-sm text-ink-600">{worker.profession}</p>

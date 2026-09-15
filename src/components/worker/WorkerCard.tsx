@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import type { Worker } from "@/lib/types";
 import { AVAILABILITY_META, cn, priceLabel } from "@/lib/utils";
 import { RatingInline } from "@/components/ui/Rating";
 import { VerifiedBadge } from "@/components/ui/Badge";
+import { Avatar } from "@/components/ui/Avatar";
 import { Icon } from "@/components/ui/Icon";
 import { useToast } from "@/components/ui/Toast";
 
@@ -32,18 +32,13 @@ export function WorkerCard({ worker }: { worker: Worker }) {
       </button>
 
       <div className="flex gap-3.5">
-        <div className="relative h-[68px] w-[68px] shrink-0 overflow-hidden rounded-xl bg-ivory-200">
-          <Image
-            src={worker.photo}
-            alt={worker.name}
-            fill
-            sizes="68px"
-            className="object-cover"
-          />
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
+        <Avatar name={worker.name} size={60} className="sm:!h-[68px] sm:!w-[68px]" />
+        <div className="min-w-0 flex-1 pr-8">
+          <div className="flex items-center gap-1.5">
             <h3 className="truncate font-display text-[16px] font-bold text-ink">{worker.name}</h3>
+            {worker.verification === "verified" && (
+              <Icon name="verified-badge" size={16} className="shrink-0 text-verified-500" />
+            )}
           </div>
           <p className="text-sm text-ink-600">{worker.profession}</p>
           <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
