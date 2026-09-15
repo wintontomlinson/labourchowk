@@ -1,9 +1,10 @@
 import { DashCard, StatCard } from "@/components/dashboard/widgets";
 import { StatusBadge } from "@/components/ui/Badge";
-import { BOOKINGS } from "@/data/bookings";
+import { getBookings } from "@/lib/db";
 import { STATUS_META, formatDate, formatINR } from "@/lib/utils";
 
-export default function Payments() {
+export default async function Payments() {
+  const BOOKINGS = await getBookings();
   const paid = BOOKINGS.filter((b) => b.status === "completed");
   const total = paid.reduce((sum, b) => sum + b.estimatedPrice, 0);
 

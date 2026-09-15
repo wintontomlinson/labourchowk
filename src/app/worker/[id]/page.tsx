@@ -7,8 +7,8 @@ import { Icon } from "@/components/ui/Icon";
 import { RatingInline, Stars } from "@/components/ui/Rating";
 import { VerifiedBadge } from "@/components/ui/Badge";
 import { WorkerContactButton } from "@/components/worker/WorkerContactButton";
-import { WORKERS, getWorker } from "@/data/workers";
-import { getReviewsForWorker, ratingDistribution } from "@/data/reviews";
+import { WORKERS } from "@/data/workers";
+import { getWorkerById, getReviewsForWorker, ratingDistributionFor } from "@/lib/db";
 import { AVAILABILITY_META, cn, formatDate, priceLabel, priceModelWord } from "@/lib/utils";
 
 export function generateStaticParams() {
@@ -21,7 +21,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const worker = getWorker(id);
+  const worker = await getWorkerById(id);
   if (!worker) return { title: "Worker not found" };
   return {
     title: `${worker.name} — ${worker.profession}`,
@@ -35,11 +35,11 @@ export default async function WorkerProfilePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const worker = getWorker(id);
+  const worker = await getWorkerById(id);
   if (!worker) notFound();
 
-  const reviews = getReviewsForWorker(worker.id);
-  const dist = ratingDistribution(worker.id);
+  const reviews = await getReviewsForWorker(worker.id);
+  const dist = await ratingDistributionFor(worker.id);
   const avail = AVAILABILITY_META[worker.availability];
   const total = worker.reviewCount || 1;
 

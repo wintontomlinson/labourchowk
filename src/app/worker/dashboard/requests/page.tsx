@@ -1,6 +1,6 @@
 import { JobRequestCard } from "@/components/worker/JobRequestCard";
 import { EmptyState } from "@/components/ui/States";
-import { JOB_REQUESTS } from "@/data/bookings";
+import { JOB_REQUESTS } from "@/lib/db";
 
 export default function WorkerRequests() {
   return (

@@ -1,0 +1,178 @@
+// Labour Chowk — Prisma schema
+// Works with any PostgreSQL provider: Vercel Postgres, Neon, Supabase, Railway, etc.
+// Set DATABASE_URL in your environment (Vercel → Project → Settings → Environment Variables).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // For Vercel Postgres / Neon pooled connections you can optionally add:
+  // directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+enum Role {
+  CUSTOMER
+  WORKER
+  ADMIN
+}
+
+enum VerificationStatus {
+  unverified
+  pending
+  verified
+  rejected
+}
+
+enum Availability {
+  available_today
+  available_soon
+  busy
+  offline
+}
+
+enum PricingModel {
+  day
+  hour
+  visit
+}
+
+enum BookingStatus {
+  pending
+  accepted
+  confirmed
+  on_the_way
+  in_progress
+  completed
+  cancelled
+}
+
+enum ReviewStatus {
+  published
+  flagged
+  hidden
+}
+
+enum ComplaintStatus {
+  open
+  in_review
+  resolved
+}
+
+model User {
+  id        String   @id @default(cuid())
+  role      Role     @default(CUSTOMER)
+  name      String
+  phone     String?  @unique
+  email     String?  @unique
+  city      String?
+  createdAt DateTime @default(now())
+
+  worker   Worker?
+  bookings Booking[] @relation("CustomerBookings")
+  reviews  Review[]  @relation("CustomerReviews")
+}
+
+model Service {
+  slug        String       @id
+  name        String
+  tagline     String
+  description String
+  icon        String
+  priceFrom   Int
+  priceModel  PricingModel
+  popular     Boolean      @default(false)
+
+  workers Worker[]
+}
+
+model City {
+  slug        String   @id
+  name        String
+  state       String
+  workerCount Int      @default(0)
+}
+
+model Worker {
+  id              String             @id @default(cuid())
+  userId          String?            @unique
+  user            User?              @relation(fields: [userId], references: [id])
+  name            String
+  photo           String
+  profession      String
+  serviceSlug     String
+  service         Service            @relation(fields: [serviceSlug], references: [slug])
+  skills          String[]
+  about           String
+  rating          Float              @default(0)
+  reviewCount     Int                @default(0)
+  experienceYears Int                @default(0)
+  price           Int
+  priceModel      PricingModel
+  city            String
+  area            String
+  distanceKm      Float              @default(0)
+  availability    Availability       @default(available_today)
+  verification    VerificationStatus @default(unverified)
+  jobsDone        Int                @default(0)
+  workPhotos      String[]
+  serviceAreas    String[]
+  languages       String[]
+  responseTime    String
+  joinedYear      Int
+  createdAt       DateTime           @default(now())
+
+  bookings Booking[]
+  reviews  Review[]
+}
+
+model Booking {
+  id             String        @id
+  workerId       String
+  worker         Worker        @relation(fields: [workerId], references: [id])
+  customerId     String?
+  customer       User?         @relation("CustomerBookings", fields: [customerId], references: [id])
+  workerName     String
+  workerPhoto    String
+  service        String
+  customerName   String
+  status         BookingStatus @default(pending)
+  date           String
+  timeSlot       String
+  address        String
+  city           String
+  estimatedPrice Int
+  priceModel     PricingModel
+  notes          String?
+  createdAt      DateTime      @default(now())
+
+  review Review?
+}
+
+model Review {
+  id           String       @id @default(cuid())
+  workerId     String
+  worker       Worker       @relation(fields: [workerId], references: [id])
+  bookingId    String?      @unique
+  booking      Booking?     @relation(fields: [bookingId], references: [id])
+  customerId   String?
+  customer     User?        @relation("CustomerReviews", fields: [customerId], references: [id])
+  customerName String
+  customerCity String
+  rating       Int
+  text         String
+  service      String
+  status       ReviewStatus @default(published)
+  createdAt    DateTime     @default(now())
+}
+
+model Complaint {
+  id        String          @id @default(cuid())
+  raisedBy  String
+  against   String
+  type      String
+  status    ComplaintStatus @default(open)
+  createdAt DateTime        @default(now())
+}

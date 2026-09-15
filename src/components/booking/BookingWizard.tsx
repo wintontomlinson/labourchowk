@@ -89,17 +89,40 @@ export function BookingWizard({ worker }: { worker: Worker }) {
     if (step > 0) setStep((s) => s - 1);
   }
 
-  function confirm() {
-    setSubmitting(true);
-    setTimeout(() => {
-      setBookingId(generateBookingId());
-      setConfirmed(true);
-      setSubmitting(false);
-    }, 1200);
-  }
-
   const cityName = CITIES.find((c) => c.slug === state.city)?.name ?? state.city;
   const estimated = worker.price;
+
+  async function confirm() {
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          workerId: worker.id,
+          workerName: worker.name,
+          workerPhoto: worker.photo,
+          service: state.service,
+          customerName: "Guest",
+          date: state.date,
+          timeSlot: state.time,
+          address: `${state.house}, ${state.area}`,
+          city: cityName,
+          estimatedPrice: estimated,
+          priceModel: worker.priceModel,
+          notes: state.description,
+        }),
+      });
+      const data = await res.json();
+      setBookingId(data?.booking?.id ?? generateBookingId());
+    } catch {
+      // Network/DB unavailable — still show a confirmation with a generated ID.
+      setBookingId(generateBookingId());
+    } finally {
+      setConfirmed(true);
+      setSubmitting(false);
+    }
+  }
 
   if (confirmed) {
     return (

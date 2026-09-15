@@ -3,12 +3,12 @@ import { StatCard, DashCard } from "@/components/dashboard/widgets";
 import { JobRequestCard } from "@/components/worker/JobRequestCard";
 import { Icon } from "@/components/ui/Icon";
 import { Stars } from "@/components/ui/Rating";
-import { JOB_REQUESTS, BOOKINGS } from "@/data/bookings";
-import { getWorker } from "@/data/workers";
+import { JOB_REQUESTS, getBookings, getWorkerById } from "@/lib/db";
 import { formatINR } from "@/lib/utils";
 
-export default function WorkerOverview() {
-  const worker = getWorker("w-rakesh-kumar")!;
+export default async function WorkerOverview() {
+  const worker = (await getWorkerById("w-rakesh-kumar"))!;
+  const BOOKINGS = await getBookings();
   const todaysJobs = BOOKINGS.filter((b) => ["confirmed", "in_progress"].includes(b.status));
   const profileCompletion = 85;
 

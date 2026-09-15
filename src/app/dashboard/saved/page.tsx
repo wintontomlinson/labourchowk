@@ -1,8 +1,8 @@
 import { WorkerCard } from "@/components/worker/WorkerCard";
-import { nearbyWorkers } from "@/lib/queries";
+import { getNearbyWorkers } from "@/lib/db";
 
-export default function SavedWorkers() {
-  const saved = nearbyWorkers(6);
+export default async function SavedWorkers() {
+  const saved = await getNearbyWorkers(6);
   return (
     <div className="space-y-5">
       <div>

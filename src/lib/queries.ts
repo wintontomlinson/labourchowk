@@ -41,11 +41,17 @@ function recommendedScore(w: Worker): number {
   return s;
 }
 
-export function filterWorkers(
+/**
+ * Pure filter + sort over an in-memory worker list. Used by the client-side
+ * search UI (which filters instantly without a round-trip) and by the server
+ * fallback when no database is configured.
+ */
+export function applyWorkerFilters(
+  source: Worker[],
   filters: WorkerFilters,
   sort: SortKey = "recommended"
 ): Worker[] {
-  let results = WORKERS.filter((w) => {
+  let results = source.filter((w) => {
     if (filters.service && w.serviceSlug !== filters.service) return false;
     if (filters.city && w.city !== filters.city) return false;
     if (filters.q) {
@@ -89,6 +95,16 @@ export function filterWorkers(
 
   return results;
 }
+
+/** Convenience wrapper that filters the bundled mock dataset. */
+export function filterWorkers(
+  filters: WorkerFilters,
+  sort: SortKey = "recommended"
+): Worker[] {
+  return applyWorkerFilters(WORKERS, filters, sort);
+}
+
+export { recommendedScore };
 
 export function nearbyWorkers(limit = 6): Worker[] {
   return [...WORKERS]

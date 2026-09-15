@@ -1,14 +1,13 @@
 import { DashCard } from "@/components/dashboard/widgets";
 import { Stars } from "@/components/ui/Rating";
 import { Icon } from "@/components/ui/Icon";
-import { getReviewsForWorker, ratingDistribution } from "@/data/reviews";
-import { getWorker } from "@/data/workers";
+import { getWorkerById, getReviewsForWorker, ratingDistributionFor } from "@/lib/db";
 import { formatDate } from "@/lib/utils";
 
-export default function WorkerReviews() {
-  const worker = getWorker("w-rakesh-kumar")!;
-  const reviews = getReviewsForWorker(worker.id);
-  const dist = ratingDistribution(worker.id);
+export default async function WorkerReviews() {
+  const worker = (await getWorkerById("w-rakesh-kumar"))!;
+  const reviews = await getReviewsForWorker(worker.id);
+  const dist = await ratingDistributionFor(worker.id);
   const total = worker.reviewCount || 1;
 
   return (

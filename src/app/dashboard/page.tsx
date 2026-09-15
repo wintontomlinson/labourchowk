@@ -2,13 +2,13 @@ import Link from "next/link";
 import { StatCard, DashCard, BookingRow } from "@/components/dashboard/widgets";
 import { Icon } from "@/components/ui/Icon";
 import { WorkerCard } from "@/components/worker/WorkerCard";
-import { BOOKINGS } from "@/data/bookings";
-import { nearbyWorkers } from "@/lib/queries";
+import { getBookings, getNearbyWorkers } from "@/lib/db";
 
-export default function CustomerOverview() {
+export default async function CustomerOverview() {
+  const BOOKINGS = await getBookings();
   const upcoming = BOOKINGS.filter((b) => ["confirmed", "in_progress", "pending"].includes(b.status));
   const completed = BOOKINGS.filter((b) => b.status === "completed");
-  const saved = nearbyWorkers(3);
+  const saved = await getNearbyWorkers(3);
 
   return (
     <div className="space-y-6">

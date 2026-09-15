@@ -4,10 +4,11 @@ import { Stars } from "@/components/ui/Rating";
 import { EmptyState } from "@/components/ui/States";
 import { Icon } from "@/components/ui/Icon";
 import { REVIEWS } from "@/data/reviews";
-import { BOOKINGS } from "@/data/bookings";
+import { getBookings } from "@/lib/db";
 import { formatDate } from "@/lib/utils";
 
-export default function CustomerReviews() {
+export default async function CustomerReviews() {
+  const BOOKINGS = await getBookings();
   // Reviews written by this demo customer (Amit Verma)
   const myReviews = REVIEWS.filter((r) => r.customerName === "Amit Verma");
   const awaiting = BOOKINGS.filter((b) => b.status === "completed");

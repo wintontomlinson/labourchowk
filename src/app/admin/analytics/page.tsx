@@ -1,10 +1,11 @@
 import { DashCard, StatCard } from "@/components/dashboard/widgets";
 import { BOOKINGS_TREND } from "@/data/misc";
 import { SERVICES } from "@/data/services";
-import { WORKERS } from "@/data/workers";
+import { getWorkers } from "@/lib/db";
 import { CITIES } from "@/data/cities";
 
-export default function AdminAnalytics() {
+export default async function AdminAnalytics() {
+  const WORKERS = await getWorkers();
   const max = Math.max(...BOOKINGS_TREND.map((d) => d.bookings));
 
   // Service popularity by worker count (proxy for demand distribution)

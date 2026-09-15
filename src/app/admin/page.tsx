@@ -1,11 +1,12 @@
 import { StatCard, DashCard } from "@/components/dashboard/widgets";
 import { StatusBadge } from "@/components/ui/Badge";
 import { PLATFORM_METRICS, BOOKINGS_TREND } from "@/data/misc";
-import { BOOKINGS } from "@/data/bookings";
-import { WORKERS } from "@/data/workers";
+import { getBookings, getWorkers } from "@/lib/db";
 import { STATUS_META, formatDate, formatINR } from "@/lib/utils";
 
-export default function AdminDashboard() {
+export default async function AdminDashboard() {
+  const BOOKINGS = await getBookings();
+  const WORKERS = await getWorkers();
   const m = PLATFORM_METRICS;
   const max = Math.max(...BOOKINGS_TREND.map((d) => d.bookings));
   const pendingWorkers = WORKERS.filter((w) => w.verification === "pending");

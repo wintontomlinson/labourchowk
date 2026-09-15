@@ -1,7 +1,8 @@
 import { BookingRow } from "@/components/dashboard/widgets";
-import { BOOKINGS } from "@/data/bookings";
+import { getBookings } from "@/lib/db";
 
-export default function WorkerBookings() {
+export default async function WorkerBookings() {
+  const BOOKINGS = await getBookings();
   return (
     <div className="space-y-5">
       <div>

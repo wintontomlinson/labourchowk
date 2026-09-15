@@ -10,7 +10,7 @@ import { Icon, type IconName } from "@/components/ui/Icon";
 import { SERVICES } from "@/data/services";
 import { CITIES } from "@/data/cities";
 import { TESTIMONIALS } from "@/data/misc";
-import { nearbyWorkers } from "@/lib/queries";
+import { getNearbyWorkers } from "@/lib/db";
 
 const TRUST_POINTS: { icon: IconName; title: string; body: string }[] = [
   {
@@ -59,8 +59,8 @@ const SAFETY_ITEMS = [
   "Report a problem",
 ];
 
-export default function HomePage() {
-  const workers = nearbyWorkers(6);
+export default async function HomePage() {
+  const workers = await getNearbyWorkers(6);
 
   return (
     <SiteShell>

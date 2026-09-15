@@ -2,11 +2,12 @@ import Link from "next/link";
 import { AdminTable } from "@/components/admin/AdminTable";
 import { VerifiedBadge } from "@/components/ui/Badge";
 import { RatingInline } from "@/components/ui/Rating";
-import { WORKERS } from "@/data/workers";
+import { getWorkers } from "@/lib/db";
 import { CITIES } from "@/data/cities";
 import { priceLabel } from "@/lib/utils";
 
-export default function AdminWorkers() {
+export default async function AdminWorkers() {
+  const WORKERS = await getWorkers();
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">

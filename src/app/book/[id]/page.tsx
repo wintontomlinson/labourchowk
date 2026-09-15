@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SiteShell } from "@/components/layout/SiteShell";
 import { BookingWizard } from "@/components/booking/BookingWizard";
-import { WORKERS, getWorker } from "@/data/workers";
+import { WORKERS } from "@/data/workers";
+import { getWorkerById } from "@/lib/db";
 
 export function generateStaticParams() {
   return WORKERS.map((w) => ({ id: w.id }));
@@ -20,7 +21,7 @@ export default async function BookPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const worker = getWorker(id);
+  const worker = await getWorkerById(id);
   if (!worker) notFound();
 
   return (

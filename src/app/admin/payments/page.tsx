@@ -1,11 +1,12 @@
 import { AdminTable } from "@/components/admin/AdminTable";
 import { StatCard } from "@/components/dashboard/widgets";
 import { StatusBadge } from "@/components/ui/Badge";
-import { BOOKINGS } from "@/data/bookings";
+import { getBookings } from "@/lib/db";
 import { PLATFORM_METRICS } from "@/data/misc";
 import { STATUS_META, formatDate, formatINR } from "@/lib/utils";
 
-export default function AdminPayments() {
+export default async function AdminPayments() {
+  const BOOKINGS = await getBookings();
   const gross = BOOKINGS.reduce((s, b) => s + b.estimatedPrice, 0);
   return (
     <div className="space-y-6">

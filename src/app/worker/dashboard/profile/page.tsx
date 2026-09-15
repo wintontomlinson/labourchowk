@@ -2,11 +2,11 @@ import Link from "next/link";
 import { DashCard } from "@/components/dashboard/widgets";
 import { VerifiedBadge } from "@/components/ui/Badge";
 import { Icon } from "@/components/ui/Icon";
-import { getWorker } from "@/data/workers";
+import { getWorkerById } from "@/lib/db";
 import { priceLabel } from "@/lib/utils";
 
-export default function WorkerProfileEdit() {
-  const worker = getWorker("w-rakesh-kumar")!;
+export default async function WorkerProfileEdit() {
+  const worker = (await getWorkerById("w-rakesh-kumar"))!;
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">

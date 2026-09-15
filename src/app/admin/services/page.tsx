@@ -1,10 +1,11 @@
 import { AdminTable } from "@/components/admin/AdminTable";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { SERVICES } from "@/data/services";
-import { WORKERS } from "@/data/workers";
+import { getWorkers } from "@/lib/db";
 import { formatINR, priceModelWord } from "@/lib/utils";
 
-export default function AdminServices() {
+export default async function AdminServices() {
+  const WORKERS = await getWorkers();
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">

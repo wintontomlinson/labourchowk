@@ -8,7 +8,7 @@ import { EmptyState } from "@/components/ui/States";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { SERVICES, getService } from "@/data/services";
 import { CITIES } from "@/data/cities";
-import { workersForService } from "@/lib/queries";
+import { getWorkersForService } from "@/lib/db";
 import { formatINR, priceModelWord } from "@/lib/utils";
 
 export function generateStaticParams() {
@@ -39,7 +39,7 @@ export default async function ServiceDetailPage({
   const service = getService(slug);
   if (!service) notFound();
 
-  const workers = workersForService(service.slug);
+  const workers = await getWorkersForService(service.slug);
   const related = SERVICES.filter((s) => s.slug !== service.slug && s.slug !== "other").slice(0, 5);
 
   // JSON-LD for the service (SEO)

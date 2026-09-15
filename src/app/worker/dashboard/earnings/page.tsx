@@ -1,6 +1,6 @@
 import { DashCard, StatCard } from "@/components/dashboard/widgets";
 import { StatusBadge } from "@/components/ui/Badge";
-import { BOOKINGS } from "@/data/bookings";
+import { getBookings } from "@/lib/db";
 import { STATUS_META, formatDate, formatINR } from "@/lib/utils";
 
 const WEEKLY = [
@@ -13,7 +13,8 @@ const WEEKLY = [
   { day: "Sun", amount: 0 },
 ];
 
-export default function WorkerEarnings() {
+export default async function WorkerEarnings() {
+  const BOOKINGS = await getBookings();
   const max = Math.max(...WEEKLY.map((w) => w.amount), 1);
   const completed = BOOKINGS.filter((b) => b.status === "completed");
 

@@ -1,5 +1,5 @@
 import { AdminTable } from "@/components/admin/AdminTable";
-import { BOOKINGS } from "@/data/bookings";
+import { getBookings } from "@/lib/db";
 import { formatINR } from "@/lib/utils";
 
 // Derive a small customer list from bookings for the demo.
@@ -12,7 +12,8 @@ const CUSTOMERS = [
   { name: "Karan Mehta", city: "Gurugram", phone: "+91 90000 00006", joined: "Jun 2026" },
 ];
 
-export default function AdminCustomers() {
+export default async function AdminCustomers() {
+  const BOOKINGS = await getBookings();
   const bookingsByName = (name: string) => BOOKINGS.filter((b) => b.customerName === name).length;
   const spendByName = (name: string) =>
     BOOKINGS.filter((b) => b.customerName === name && b.status === "completed").reduce((s, b) => s + b.estimatedPrice, 0);
