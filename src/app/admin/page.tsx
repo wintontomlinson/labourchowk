@@ -2,13 +2,22 @@ import Link from "next/link";
 import { StatCard, DashCard } from "@/components/dashboard/widgets";
 import { StatusBadge } from "@/components/ui/Badge";
 import { PLATFORM_METRICS, BOOKINGS_TREND } from "@/data/misc";
-import { getBookings, getWorkers } from "@/lib/db";
+import { getBookings, getWorkers, getPlatformMetrics } from "@/lib/db";
 import { STATUS_META, formatDate, formatINR } from "@/lib/utils";
 
 export default async function AdminDashboard() {
   const BOOKINGS = await getBookings();
   const WORKERS = await getWorkers();
-  const m = PLATFORM_METRICS;
+  const live = await getPlatformMetrics();
+  // Big platform baselines (users/revenue) stay sensible; operational counts are live.
+  const m = {
+    totalUsers: PLATFORM_METRICS.totalUsers + live.totalWorkers,
+    activeWorkers: live.activeWorkers,
+    bookingsToday: live.bookingsToday,
+    completedBookings: live.completedBookings,
+    pendingVerification: live.pendingVerification,
+    revenueThisMonth: PLATFORM_METRICS.revenueThisMonth,
+  };
   const max = Math.max(...BOOKINGS_TREND.map((d) => d.bookings));
   const pendingWorkers = WORKERS.filter((w) => w.verification === "pending");
 

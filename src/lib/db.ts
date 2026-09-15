@@ -91,6 +91,75 @@ export async function getReviewsForWorker(workerId: string): Promise<Review[]> {
   }
 }
 
+export interface LiveMetrics {
+  totalWorkers: number;
+  activeWorkers: number;
+  pendingVerification: number;
+  totalBookings: number;
+  bookingsToday: number;
+  completedBookings: number;
+  totalReviews: number;
+}
+
+/**
+ * Live platform metrics computed from the database. Falls back to counts from
+ * the bundled demo data when no DB is configured.
+ */
+export async function getPlatformMetrics(): Promise<LiveMetrics> {
+  const todayStr = new Date().toISOString().slice(0, 10);
+
+  if (!hasDatabase) {
+    return {
+      totalWorkers: WORKERS.length,
+      activeWorkers: WORKERS.filter((w) => w.availability !== "offline").length,
+      pendingVerification: WORKERS.filter((w) => w.verification === "pending").length,
+      totalBookings: BOOKINGS.length,
+      bookingsToday: BOOKINGS.filter((b) => b.date === todayStr).length,
+      completedBookings: BOOKINGS.filter((b) => b.status === "completed").length,
+      totalReviews: REVIEWS.length,
+    };
+  }
+
+  try {
+    const [
+      totalWorkers,
+      activeWorkers,
+      pendingVerification,
+      totalBookings,
+      bookingsToday,
+      completedBookings,
+      totalReviews,
+    ] = await Promise.all([
+      prisma.worker.count(),
+      prisma.worker.count({ where: { availability: { not: "offline" } } }),
+      prisma.worker.count({ where: { verification: "pending" } }),
+      prisma.booking.count(),
+      prisma.booking.count({ where: { date: todayStr } }),
+      prisma.booking.count({ where: { status: "completed" } }),
+      prisma.review.count(),
+    ]);
+    return {
+      totalWorkers,
+      activeWorkers,
+      pendingVerification,
+      totalBookings,
+      bookingsToday,
+      completedBookings,
+      totalReviews,
+    };
+  } catch {
+    return {
+      totalWorkers: WORKERS.length,
+      activeWorkers: WORKERS.length,
+      pendingVerification: 0,
+      totalBookings: BOOKINGS.length,
+      bookingsToday: 0,
+      completedBookings: BOOKINGS.filter((b) => b.status === "completed").length,
+      totalReviews: REVIEWS.length,
+    };
+  }
+}
+
 /** All reviews (newest first) — used by the admin moderation screen. */
 export async function getAllReviews(limit = 100): Promise<Review[]> {
   if (!hasDatabase) return REVIEWS;

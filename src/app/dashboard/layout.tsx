@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { CUSTOMER_NAV } from "@/components/dashboard/navs";
 
+// Always render dashboard pages with fresh data from the database.
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "My Dashboard",
   robots: { index: false },

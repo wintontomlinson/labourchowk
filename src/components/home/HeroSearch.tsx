@@ -45,8 +45,8 @@ export function HeroSearch() {
         {/* Service */}
         <div
           className={cn(
-            "flex flex-1 items-center gap-2.5 rounded-xl border px-3.5 transition-colors",
-            focused ? "border-amber-400 ring-2 ring-amber-500/15" : "border-ink/10"
+            "flex flex-1 items-center gap-2.5 rounded-xl border bg-ivory-50 px-3.5 transition-colors",
+            focused ? "border-amber-400 bg-white ring-2 ring-amber-500/15" : "border-ink/15"
           )}
         >
           <Icon name="search" size={20} className="shrink-0 text-ink-500" />
@@ -56,7 +56,7 @@ export function HeroSearch() {
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
             placeholder="What work do you need?"
-            className="h-12 w-full min-w-0 bg-transparent text-[15px] text-ink placeholder:text-ink-500/70 focus:outline-none"
+            className="h-12 w-full min-w-0 bg-transparent text-[15px] font-medium text-ink placeholder:font-normal placeholder:text-ink-500 focus:outline-none"
             list="service-suggestions"
           />
           <datalist id="service-suggestions">
@@ -68,13 +68,13 @@ export function HeroSearch() {
 
         {/* Location — input on top, "Use my location" as its own full-width row on mobile */}
         <div className="flex flex-1 flex-col gap-2 md:max-w-[300px]">
-          <div className="flex items-center gap-2.5 rounded-xl border border-ink/10 px-3.5">
+          <div className="flex items-center gap-2.5 rounded-xl border border-ink/15 bg-ivory-50 px-3.5 transition-colors focus-within:border-amber-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-amber-500/15">
             <Icon name="pin" size={20} className="shrink-0 text-amber-500" />
             <input
               value={city}
               onChange={(e) => setCity(e.target.value)}
               placeholder="Enter your location"
-              className="h-12 w-full min-w-0 bg-transparent text-[15px] text-ink placeholder:text-ink-500/70 focus:outline-none"
+              className="h-12 w-full min-w-0 bg-transparent text-[15px] font-medium text-ink placeholder:font-normal placeholder:text-ink-500 focus:outline-none"
               list="city-suggestions"
             />
             <datalist id="city-suggestions">
