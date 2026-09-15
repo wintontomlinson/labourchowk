@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SiteShell } from "@/components/layout/SiteShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Icon, type IconName } from "@/components/ui/Icon";
-import { ActionButton } from "@/components/ui/ActionButton";
+import { ContactForm } from "@/components/ContactForm";
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -34,23 +34,7 @@ export default function ContactPage() {
           ))}
         </div>
 
-        <form className="rounded-card border border-ink/[0.07] bg-white p-6 shadow-card">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label className="label">Name</label>
-              <input className="input" placeholder="Your name" />
-            </div>
-            <div>
-              <label className="label">Phone</label>
-              <input className="input" placeholder="Your mobile number" />
-            </div>
-          </div>
-          <div className="mt-4">
-            <label className="label">Message</label>
-            <textarea rows={5} className="input h-auto py-3" placeholder="How can we help?" />
-          </div>
-          <ActionButton className="btn-primary btn-md mt-4" toastMessage="Thanks! We'll get back to you soon." loadingLabel="Sending…">Send message</ActionButton>
-        </form>
+        <ContactForm />
       </div>
     </SiteShell>
   );

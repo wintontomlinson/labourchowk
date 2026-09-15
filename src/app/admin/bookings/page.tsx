@@ -25,7 +25,14 @@ export default function AdminBookings() {
 
   const setStatus = (id: string, status: BookingStatus) => {
     setRows((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
-    toast(`${id} marked as ${STATUS_META[status].label}`, "success");
+    // Persist to the database.
+    fetch(`/api/bookings/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    })
+      .then((r) => (r.ok ? toast(`${id} → ${STATUS_META[status].label}`, "success") : Promise.reject()))
+      .catch(() => toast("Couldn't save status change", "error"));
   };
 
   const shown = filter === "all" ? rows : rows.filter((b) => b.status === filter);

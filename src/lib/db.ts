@@ -100,6 +100,165 @@ export async function ratingDistributionFor(
   return dist;
 }
 
+// ────────────────────────────────────────────────────────────────────────────
+// WRITES — every mutation persists to Neon when DATABASE_URL is set. When it's
+// not (e.g. a preview without a DB), functions no-op gracefully so the UI still
+// works in demo mode.
+// ────────────────────────────────────────────────────────────────────────────
+
+export interface NewReviewInput {
+  workerId: string;
+  customerName: string;
+  customerCity: string;
+  rating: number;
+  text: string;
+  service: string;
+}
+
+/** Create a review and recompute the worker's average rating + review count. */
+export async function createReview(input: NewReviewInput): Promise<Review | null> {
+  if (!hasDatabase) return null;
+  try {
+    const created = await prisma.review.create({
+      data: {
+        workerId: input.workerId,
+        customerName: input.customerName,
+        customerCity: input.customerCity,
+        rating: input.rating,
+        text: input.text,
+        service: input.service,
+        status: "published",
+      },
+    });
+
+    // Recompute aggregate rating for the worker from all published reviews.
+    const agg = await prisma.review.aggregate({
+      where: { workerId: input.workerId, status: "published" },
+      _avg: { rating: true },
+      _count: { _all: true },
+    });
+    await prisma.worker.update({
+      where: { id: input.workerId },
+      data: {
+        rating: Math.round((agg._avg.rating ?? input.rating) * 10) / 10,
+        reviewCount: agg._count._all,
+      },
+    });
+
+    return toReview(created);
+  } catch {
+    return null;
+  }
+}
+
+/** Update a booking's status. */
+export async function updateBookingStatus(
+  id: string,
+  status: Booking["status"]
+): Promise<boolean> {
+  if (!hasDatabase) return true;
+  try {
+    await prisma.booking.update({ where: { id }, data: { status } });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Update a worker's verification status (admin approve/reject). */
+export async function updateWorkerVerification(
+  id: string,
+  verification: Worker["verification"]
+): Promise<boolean> {
+  if (!hasDatabase) return true;
+  try {
+    await prisma.worker.update({ where: { id }, data: { verification } });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Moderate a review (publish / hide / flag). */
+export async function updateReviewStatus(
+  id: string,
+  status: Review["status"]
+): Promise<boolean> {
+  if (!hasDatabase) return true;
+  try {
+    await prisma.review.update({ where: { id }, data: { status } });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export interface NewWorkerInput {
+  name: string;
+  phone?: string;
+  profession: string;
+  serviceSlug: string;
+  skills: string[];
+  experienceYears: number;
+  price: number;
+  priceModel: Worker["priceModel"];
+  city: string;
+  area: string;
+  serviceAreas: string[];
+}
+
+/** Register a new worker (from onboarding). Returns the created worker. */
+export async function createWorker(input: NewWorkerInput): Promise<Worker | null> {
+  if (!hasDatabase) return null;
+  try {
+    const row = await prisma.worker.create({
+      data: {
+        name: input.name,
+        photo: "",
+        profession: input.profession,
+        serviceSlug: input.serviceSlug,
+        skills: input.skills,
+        about: `${input.profession} with ${input.experienceYears}+ years of experience in ${input.area}.`,
+        rating: 0,
+        reviewCount: 0,
+        experienceYears: input.experienceYears,
+        price: input.price,
+        priceModel: input.priceModel,
+        city: input.city,
+        area: input.area,
+        distanceKm: 0,
+        availability: "available_today",
+        verification: "pending",
+        jobsDone: 0,
+        workPhotos: [],
+        serviceAreas: input.serviceAreas.length ? input.serviceAreas : [input.area],
+        languages: ["Hindi"],
+        responseTime: "New on Labour Chowk",
+        joinedYear: new Date().getFullYear(),
+      },
+    });
+    return toWorker(row);
+  } catch {
+    return null;
+  }
+}
+
+/** Store a contact / support message. */
+export async function createContactMessage(input: {
+  name: string;
+  phone?: string;
+  email?: string;
+  message: string;
+}): Promise<boolean> {
+  if (!hasDatabase) return true;
+  try {
+    await prisma.contactMessage.create({ data: input });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /** Create a booking. Persists to the DB when configured, else returns the object. */
 export async function createBooking(data: Booking): Promise<Booking> {
   if (!hasDatabase) return data;

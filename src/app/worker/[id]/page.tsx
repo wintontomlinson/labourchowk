@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Avatar } from "@/components/ui/Avatar";
 import { WorkerServiceMap } from "@/components/map/WorkerServiceMap";
+import { ReviewForm } from "@/components/worker/ReviewForm";
 import { workerCoords } from "@/lib/geo";
 import type { Metadata } from "next";
 import { SiteShell } from "@/components/layout/SiteShell";
@@ -13,6 +14,9 @@ import { WorkerContactButton } from "@/components/worker/WorkerContactButton";
 import { WORKERS } from "@/data/workers";
 import { getWorkerById, getReviewsForWorker, ratingDistributionFor } from "@/lib/db";
 import { AVAILABILITY_META, cn, formatDate, priceLabel, priceModelWord } from "@/lib/utils";
+
+// Always render with fresh DB data so new reviews/ratings appear immediately.
+export const revalidate = 0;
 
 export function generateStaticParams() {
   return WORKERS.map((w) => ({ id: w.id }));
@@ -156,6 +160,9 @@ export default async function WorkerProfilePage({
 
           {/* Reviews */}
           <Section title={`Reviews (${worker.reviewCount})`}>
+            <div className="mb-4">
+              <ReviewForm workerId={worker.id} service={worker.profession} />
+            </div>
             <div className="flex flex-col gap-6 sm:flex-row">
               <div className="sm:w-52 sm:shrink-0">
                 <div className="flex items-end gap-2">

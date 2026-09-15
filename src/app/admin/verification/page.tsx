@@ -15,7 +15,17 @@ export default function AdminVerification() {
 
   const act = (id: string, approved: boolean) => {
     setQueue((prev) => prev.filter((w) => w.id !== id));
-    toast(approved ? "Worker verified" : "Verification rejected", approved ? "success" : "info");
+    fetch("/api/admin/verification", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ workerId: id, status: approved ? "verified" : "rejected" }),
+    })
+      .then((r) =>
+        r.ok
+          ? toast(approved ? "Worker verified" : "Verification rejected", approved ? "success" : "info")
+          : Promise.reject()
+      )
+      .catch(() => toast("Couldn't save decision", "error"));
   };
 
   return (

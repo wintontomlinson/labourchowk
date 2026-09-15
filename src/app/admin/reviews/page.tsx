@@ -20,6 +20,11 @@ export default function AdminReviews() {
   const setStatus = (id: string, status: Review["status"], msg: string) => {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
     toast(msg, status === "hidden" ? "info" : "success");
+    fetch("/api/admin/reviews", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reviewId: id, status }),
+    }).catch(() => {});
   };
 
   return (
