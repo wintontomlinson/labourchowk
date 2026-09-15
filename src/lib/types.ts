@@ -44,6 +44,15 @@ export interface City {
   state: string;
   /** number of active workers — realistic demo figure */
   workerCount: number;
+  /** approximate city centre for maps */
+  lat?: number;
+  lng?: number;
+}
+
+/** A latitude/longitude point. */
+export interface LatLng {
+  lat: number;
+  lng: number;
 }
 
 export interface Review {

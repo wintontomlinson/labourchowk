@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Avatar } from "@/components/ui/Avatar";
+import { Map } from "@/components/map/Map";
+import { workerCoords } from "@/lib/geo";
 import type { Metadata } from "next";
 import { SiteShell } from "@/components/layout/SiteShell";
 import { Icon } from "@/components/ui/Icon";
@@ -41,6 +43,7 @@ export default async function WorkerProfilePage({
 
   const reviews = await getReviewsForWorker(worker.id);
   const dist = await ratingDistributionFor(worker.id);
+  const coords = workerCoords(worker);
   const avail = AVAILABILITY_META[worker.availability];
   const total = worker.reviewCount || 1;
 
@@ -233,18 +236,18 @@ export default async function WorkerProfilePage({
           {/* Service area */}
           <Section title="Service Area">
             <div className="overflow-hidden rounded-xl border border-ink/[0.07]">
-              <div className="relative flex h-44 items-center justify-center bg-[radial-gradient(circle_at_30%_40%,#f2ede4,transparent),radial-gradient(circle_at_70%_70%,#fbe6d3,transparent)]">
-                <div className="absolute inset-0 opacity-40 [background-image:linear-gradient(#0000000a_1px,transparent_1px),linear-gradient(90deg,#0000000a_1px,transparent_1px)] [background-size:24px_24px]" />
-                <div className="relative flex flex-col items-center gap-1">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-amber-500 text-white shadow-card-hover">
-                    <Icon name="pin" size={22} />
-                  </span>
-                  <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-ink shadow-sm">
-                    {worker.area}
-                  </span>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-2 p-3">
+              <Map
+                center={coords}
+                zoom={13}
+                radiusKm={4}
+                pins={[{ id: worker.id, lat: coords.lat, lng: coords.lng, title: worker.name, subtitle: `${worker.profession} · ${worker.area}` }]}
+                mapClassName="h-56 sm:h-64"
+                className="rounded-none border-0"
+              />
+              <div className="flex flex-wrap items-center gap-2 border-t border-ink/[0.07] p-3">
+                <span className="inline-flex items-center gap-1 text-xs font-medium text-ink-600">
+                  <Icon name="pin" size={13} className="text-amber-500" /> Based in {worker.area} · serves nearby areas:
+                </span>
                 {worker.serviceAreas.map((area) => (
                   <span key={area} className="chip bg-ivory-100 text-ink-700">{area}</span>
                 ))}

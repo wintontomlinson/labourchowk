@@ -2,9 +2,11 @@
 
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
-import { WorkerCard, WorkerCardSkeleton } from "@/components/worker/WorkerCard";
+import { WorkerCard } from "@/components/worker/WorkerCard";
 import { Icon } from "@/components/ui/Icon";
 import { EmptyState } from "@/components/ui/States";
+import { Map } from "@/components/map/Map";
+import { workerCoords, cityCenter, DELHI_CENTER } from "@/lib/geo";
 import { CITIES } from "@/data/cities";
 import { SERVICES } from "@/data/services";
 import {
@@ -32,11 +34,25 @@ export function FindWorkersClient() {
   const [sort, setSort] = useState<SortKey>("recommended");
   const [sheetOpen, setSheetOpen] = useState(false);
   const [maxPrice, setMaxPrice] = useState<number>(maxP);
+  const [view, setView] = useState<"list" | "map">("list");
 
   const results = useMemo(
     () => filterWorkers({ ...filters, maxPrice: maxPrice < maxP ? maxPrice : undefined }, sort),
     [filters, sort, maxPrice, maxP]
   );
+
+  const mapCenter = filters.city ? cityCenter(filters.city) : DELHI_CENTER;
+  const mapPins = results.map((w) => {
+    const c = workerCoords(w);
+    return {
+      id: w.id,
+      lat: c.lat,
+      lng: c.lng,
+      title: w.name,
+      subtitle: `${w.profession} · ${w.area}`,
+      href: `/worker/${w.id}`,
+    };
+  });
 
   function update<K extends keyof WorkerFilters>(key: K, value: WorkerFilters[K]) {
     setFilters((f) => ({ ...f, [key]: f[key] === value ? undefined : value }));
@@ -201,6 +217,29 @@ export function FindWorkersClient() {
                   </span>
                 )}
               </button>
+              {/* List / Map toggle */}
+              <div className="flex items-center rounded-lg border border-ink/10 bg-white p-0.5">
+                <button
+                  onClick={() => setView("list")}
+                  className={cn(
+                    "flex h-8 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium transition-colors",
+                    view === "list" ? "bg-ink text-ivory-100" : "text-ink-600"
+                  )}
+                  aria-label="List view"
+                >
+                  <Icon name="menu" size={15} /> <span className="hidden sm:inline">List</span>
+                </button>
+                <button
+                  onClick={() => setView("map")}
+                  className={cn(
+                    "flex h-8 items-center gap-1.5 rounded-md px-2.5 text-sm font-medium transition-colors",
+                    view === "map" ? "bg-ink text-ivory-100" : "text-ink-600"
+                  )}
+                  aria-label="Map view"
+                >
+                  <Icon name="pin" size={15} /> <span className="hidden sm:inline">Map</span>
+                </button>
+              </div>
               <div className="flex items-center gap-1.5 rounded-lg border border-ink/10 bg-white px-2">
                 <span className="hidden text-xs text-ink-500 sm:inline">Sort:</span>
                 <select
@@ -225,6 +264,13 @@ export function FindWorkersClient() {
               description="Try widening your distance, lowering the rating filter, or clearing filters to see more workers in your area."
               actionLabel="Clear filters"
               actionHref="/find-workers"
+            />
+          ) : view === "map" ? (
+            <Map
+              center={mapCenter}
+              zoom={filters.city ? 12 : 11}
+              pins={mapPins}
+              mapClassName="h-[420px] sm:h-[560px]"
             />
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
