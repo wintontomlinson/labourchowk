@@ -4,7 +4,7 @@
   "private": true,
   "description": "Labour Chowk — Find trusted workers near you. Har Kaam Ke Liye, Sahi Insaan.",
   "engines": {
-    "node": ">=18.18.0"
+    "node": "22.x"
   },
   "scripts": {
     "dev": "next dev",
@@ -16,12 +16,9 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio"
   },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
-  },
   "dependencies": {
     "@prisma/client": "^6.2.1",
-    "next": "15.1.6",
+    "next": "15.5.25",
     "react": "19.0.0",
     "react-dom": "19.0.0"
   },
