@@ -56,7 +56,7 @@ export function HeroSearch() {
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
             placeholder="What work do you need?"
-            className="h-12 w-full bg-transparent text-[15px] text-ink placeholder:text-ink-500/70 focus:outline-none"
+            className="h-12 w-full min-w-0 bg-transparent text-[15px] text-ink placeholder:text-ink-500/70 focus:outline-none"
             list="service-suggestions"
           />
           <datalist id="service-suggestions">
@@ -66,36 +66,54 @@ export function HeroSearch() {
           </datalist>
         </div>
 
-        {/* Location */}
-        <div className="flex flex-1 items-center gap-2.5 rounded-xl border border-ink/10 px-3.5 md:max-w-[280px]">
-          <Icon name="pin" size={20} className="shrink-0 text-amber-500" />
-          <input
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            placeholder="Enter your location"
-            className="h-12 w-full bg-transparent text-[15px] text-ink placeholder:text-ink-500/70 focus:outline-none"
-            list="city-suggestions"
-          />
-          <datalist id="city-suggestions">
-            {CITIES.map((c) => (
-              <option key={c.slug} value={c.name} />
-            ))}
-          </datalist>
+        {/* Location — input on top, "Use my location" as its own full-width row on mobile */}
+        <div className="flex flex-1 flex-col gap-2 md:max-w-[300px]">
+          <div className="flex items-center gap-2.5 rounded-xl border border-ink/10 px-3.5">
+            <Icon name="pin" size={20} className="shrink-0 text-amber-500" />
+            <input
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              placeholder="Enter your location"
+              className="h-12 w-full min-w-0 bg-transparent text-[15px] text-ink placeholder:text-ink-500/70 focus:outline-none"
+              list="city-suggestions"
+            />
+            <datalist id="city-suggestions">
+              {CITIES.map((c) => (
+                <option key={c.slug} value={c.name} />
+              ))}
+            </datalist>
+            {/* Compact icon-only detect on desktop (space is tight in the row) */}
+            <button
+              type="button"
+              onClick={geo.locate}
+              disabled={detecting}
+              title="Use my location"
+              aria-label="Use my location"
+              className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-lg text-amber-600 hover:bg-amber-50 disabled:opacity-70 md:flex"
+            >
+              {detecting ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-amber-500/30 border-t-amber-600" />
+              ) : (
+                <Icon name="pin" size={17} />
+              )}
+            </button>
+          </div>
+          {/* Full-width, easy-to-tap detect button on mobile */}
           <button
             type="button"
             onClick={geo.locate}
             disabled={detecting}
-            className="flex shrink-0 items-center gap-1 whitespace-nowrap text-xs font-semibold text-amber-600 hover:text-amber-700 disabled:opacity-70"
+            className="flex h-11 items-center justify-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 text-sm font-semibold text-amber-700 hover:bg-amber-100 disabled:opacity-70 md:hidden"
           >
             {detecting ? (
               <>
-                <span className="h-3 w-3 animate-spin rounded-full border-2 border-amber-500/30 border-t-amber-600" />
-                Locating…
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-amber-500/30 border-t-amber-600" />
+                Detecting your location…
               </>
             ) : (
               <>
-                <Icon name="pin" size={13} />
-                Use my location
+                <Icon name="pin" size={16} />
+                Use my current location
               </>
             )}
           </button>
