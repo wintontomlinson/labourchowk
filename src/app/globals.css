@@ -132,3 +132,9 @@
 .leaflet-container {
   font-family: var(--font-inter), system-ui, sans-serif;
 }
+
+
+/* Spinner keyframe for inline (non-Tailwind) usage, e.g. the map locate control */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

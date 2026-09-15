@@ -340,9 +340,11 @@ export function FindWorkersClient() {
           ) : view === "map" ? (
             <Map
               center={mapCenter}
-              zoom={filters.city ? 12 : 11}
+              zoom={userLoc ? 13 : filters.city ? 12 : 11}
               pins={mapPins}
               mapClassName="h-[420px] sm:h-[560px]"
+              showLocate
+              onLocate={(p) => setUserLoc(p)}
             />
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

@@ -1,19 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="40" y2="40">
-      <stop offset="0" stop-color="#242019"/>
-      <stop offset="1" stop-color="#0f0d0b"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="44" y2="44">
+      <stop offset="0" stop-color="#2b2620"/>
+      <stop offset="1" stop-color="#100e0b"/>
     </linearGradient>
-    <linearGradient id="amber" x1="8" y1="8" x2="32" y2="32">
-      <stop offset="0" stop-color="#f0a662"/>
-      <stop offset="1" stop-color="#e8792b"/>
+    <linearGradient id="amber" x1="10" y1="8" x2="34" y2="38">
+      <stop offset="0" stop-color="#f5b072"/>
+      <stop offset="0.55" stop-color="#ec8f42"/>
+      <stop offset="1" stop-color="#cf6318"/>
     </linearGradient>
   </defs>
-  <rect width="40" height="40" rx="12" fill="url(#bg)"/>
-  <g stroke="url(#amber)" stroke-linecap="round">
-    <path d="M20 6v9M20 25v9M6 20h9M25 20h9" stroke-width="3.4"/>
-    <path d="M11 11l4 4M29 11l-4 4M11 29l4-4M29 29l-4-4" stroke-width="2.2" stroke-opacity="0.45"/>
+  <rect width="44" height="44" rx="13" fill="url(#bg)"/>
+  <rect width="44" height="22" rx="13" fill="#ffffff" fill-opacity="0.055"/>
+  <path d="M22 7c-6.6 0-12 5.2-12 11.7 0 8 12 18.3 12 18.3s12-10.3 12-18.3C34 12.2 28.6 7 22 7Z" fill="url(#amber)"/>
+  <circle cx="22" cy="18.7" r="7.6" fill="#faf7f2"/>
+  <g stroke="#cf6318" stroke-width="2.1" stroke-linecap="round">
+    <path d="M22 13.4v10.6M16.7 18.7h10.6"/>
   </g>
-  <circle cx="20" cy="20" r="5.4" fill="#faf7f2"/>
-  <circle cx="20" cy="20" r="2.5" fill="url(#amber)"/>
+  <circle cx="22" cy="18.7" r="2.15" fill="#e8792b"/>
 </svg>

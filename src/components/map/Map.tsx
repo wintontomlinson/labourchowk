@@ -25,6 +25,9 @@ export function Map({
   radiusKm,
   className,
   mapClassName,
+  showLocate,
+  onLocate,
+  onLocateError,
 }: {
   center: LatLng;
   zoom?: number;
@@ -32,10 +35,22 @@ export function Map({
   radiusKm?: number;
   className?: string;
   mapClassName?: string;
+  showLocate?: boolean;
+  onLocate?: (p: LatLng) => void;
+  onLocateError?: (msg: string) => void;
 }) {
   return (
     <div className={cn("overflow-hidden rounded-xl border border-ink/[0.07] bg-ivory-200", className)}>
-      <LeafletMap center={center} zoom={zoom} pins={pins} radiusKm={radiusKm} className={mapClassName} />
+      <LeafletMap
+        center={center}
+        zoom={zoom}
+        pins={pins}
+        radiusKm={radiusKm}
+        className={mapClassName}
+        showLocate={showLocate}
+        onLocate={onLocate}
+        onLocateError={onLocateError}
+      />
     </div>
   );
 }

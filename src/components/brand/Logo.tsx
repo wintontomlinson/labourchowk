@@ -10,45 +10,49 @@ import { cn } from "@/lib/utils";
  * It reads clearly at small sizes and on both light and dark backgrounds.
  */
 export function LogoMark({ size = 38, className }: { size?: number; className?: string }) {
-  // Unique gradient id per render size to avoid SVG id clashes on a page.
-  const gid = `lc-g-${size}`;
+  // Unique gradient ids per size to avoid SVG id clashes when multiple render.
+  const g = `lc-${size}`;
   return (
     <span
       className={cn(
-        "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-[12px] ring-1 ring-black/5 shadow-[0_2px_8px_rgba(23,20,18,0.18)]",
+        "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-[13px] ring-1 ring-black/5 shadow-[0_3px_10px_rgba(23,20,18,0.22)]",
         className
       )}
       style={{ width: size, height: size }}
     >
-      <svg width={size} height={size} viewBox="0 0 40 40" fill="none" aria-hidden="true">
+      <svg width={size} height={size} viewBox="0 0 44 44" fill="none" aria-hidden="true">
         <defs>
-          <linearGradient id={`${gid}-bg`} x1="0" y1="0" x2="40" y2="40">
-            <stop offset="0" stopColor="#242019" />
-            <stop offset="1" stopColor="#0f0d0b" />
+          <linearGradient id={`${g}-bg`} x1="0" y1="0" x2="44" y2="44">
+            <stop offset="0" stopColor="#2b2620" />
+            <stop offset="1" stopColor="#100e0b" />
           </linearGradient>
-          <linearGradient id={`${gid}-amber`} x1="8" y1="8" x2="32" y2="32">
-            <stop offset="0" stopColor="#f0a662" />
-            <stop offset="1" stopColor="#e8792b" />
+          <linearGradient id={`${g}-amber`} x1="10" y1="8" x2="34" y2="38">
+            <stop offset="0" stopColor="#f5b072" />
+            <stop offset="0.55" stopColor="#ec8f42" />
+            <stop offset="1" stopColor="#cf6318" />
           </linearGradient>
         </defs>
 
-        {/* rounded charcoal tile with a soft top highlight */}
-        <rect width="40" height="40" rx="12" fill={`url(#${gid}-bg)`} />
-        <rect width="40" height="20" rx="12" fill="#ffffff" fillOpacity="0.05" />
+        {/* charcoal tile + soft top highlight */}
+        <rect width="44" height="44" rx="13" fill={`url(#${g}-bg)`} />
+        <rect x="0" y="0" width="44" height="22" rx="13" fill="#ffffff" fillOpacity="0.055" />
 
-        {/* chowk / crossroads — four roads meeting */}
-        <g stroke={`url(#${gid}-amber)`} strokeLinecap="round">
-          <path d="M20 6v9M20 25v9M6 20h9M25 20h9" strokeWidth="3.4" />
-          <path
-            d="M11 11l4 4M29 11l-4 4M11 29l4-4M29 29l-4-4"
-            strokeWidth="2.2"
-            strokeOpacity="0.45"
-          />
+        {/*
+          Mark = a location pin whose inner shape is a "chowk" (crossroads).
+          Reads as: a place where workers meet for work.
+        */}
+        {/* pin body */}
+        <path
+          d="M22 7c-6.6 0-12 5.2-12 11.7 0 8 12 18.3 12 18.3s12-10.3 12-18.3C34 12.2 28.6 7 22 7Z"
+          fill={`url(#${g}-amber)`}
+        />
+        {/* inner disc */}
+        <circle cx="22" cy="18.7" r="7.6" fill="#faf7f2" />
+        {/* crossroads inside the disc */}
+        <g stroke="#cf6318" strokeWidth="2.1" strokeLinecap="round">
+          <path d="M22 13.4v10.6M16.7 18.7h10.6" />
         </g>
-
-        {/* central meeting point */}
-        <circle cx="20" cy="20" r="5.4" fill="#faf7f2" />
-        <circle cx="20" cy="20" r="2.5" fill={`url(#${gid}-amber)`} />
+        <circle cx="22" cy="18.7" r="2.15" fill="#e8792b" />
       </svg>
     </span>
   );

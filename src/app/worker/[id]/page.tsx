@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Avatar } from "@/components/ui/Avatar";
-import { Map } from "@/components/map/Map";
+import { WorkerServiceMap } from "@/components/map/WorkerServiceMap";
 import { workerCoords } from "@/lib/geo";
 import type { Metadata } from "next";
 import { SiteShell } from "@/components/layout/SiteShell";
@@ -235,24 +235,11 @@ export default async function WorkerProfilePage({
 
           {/* Service area */}
           <Section title="Service Area">
-            <div className="overflow-hidden rounded-xl border border-ink/[0.07]">
-              <Map
-                center={coords}
-                zoom={13}
-                radiusKm={4}
-                pins={[{ id: worker.id, lat: coords.lat, lng: coords.lng, title: worker.name, subtitle: `${worker.profession} · ${worker.area}` }]}
-                mapClassName="h-56 sm:h-64"
-                className="rounded-none border-0"
-              />
-              <div className="flex flex-wrap items-center gap-2 border-t border-ink/[0.07] p-3">
-                <span className="inline-flex items-center gap-1 text-xs font-medium text-ink-600">
-                  <Icon name="pin" size={13} className="text-amber-500" /> Based in {worker.area} · serves nearby areas:
-                </span>
-                {worker.serviceAreas.map((area) => (
-                  <span key={area} className="chip bg-ivory-100 text-ink-700">{area}</span>
-                ))}
-              </div>
-            </div>
+            <WorkerServiceMap
+              worker={{ id: worker.id, name: worker.name, profession: worker.profession, area: worker.area }}
+              center={coords}
+              areas={worker.serviceAreas}
+            />
           </Section>
         </div>
 
