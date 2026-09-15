@@ -24,15 +24,15 @@ export function StatCard({
     green: "bg-verified-50 text-verified-600",
   };
   return (
-    <div className="rounded-card border border-ink/[0.07] bg-white p-4 shadow-card sm:p-5">
-      <div className="flex items-center justify-between">
-        <span className={cn("flex h-10 w-10 items-center justify-center rounded-xl", toneMap[tone])}>
+    <div className="rounded-card border border-ink/[0.07] bg-white p-3.5 shadow-card sm:p-5">
+      <div className="flex items-center justify-between gap-2">
+        <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-xl sm:h-10 sm:w-10", toneMap[tone])}>
           <Icon name={icon} size={20} />
         </span>
-        {hint && <span className="text-xs font-medium text-verified-600">{hint}</span>}
+        {hint && <span className="shrink-0 text-xs font-medium text-verified-600">{hint}</span>}
       </div>
-      <p className="mt-3 font-display text-2xl font-extrabold text-ink">{value}</p>
-      <p className="text-sm text-ink-500">{label}</p>
+      <p className="mt-3 truncate font-display text-xl font-extrabold text-ink sm:text-2xl">{value}</p>
+      <p className="truncate text-[13px] text-ink-500 sm:text-sm">{label}</p>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { StatCard, DashCard } from "@/components/dashboard/widgets";
 import { StatusBadge } from "@/components/ui/Badge";
 import { PLATFORM_METRICS, BOOKINGS_TREND } from "@/data/misc";
@@ -13,9 +14,22 @@ export default async function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="font-display text-2xl font-extrabold text-ink">Platform overview</h2>
-        <p className="text-ink-600">Key metrics across Labour Chowk.</p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="font-display text-2xl font-extrabold text-ink">Platform overview</h2>
+          <p className="text-ink-600">Key metrics across Labour Chowk.</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/admin/verification" className="btn-outline btn-sm">
+            Verification queue
+            {pendingWorkers.length > 0 && (
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1 text-[11px] font-bold text-white">
+                {pendingWorkers.length}
+              </span>
+            )}
+          </Link>
+          <Link href="/admin/bookings" className="btn-dark btn-sm">Manage bookings</Link>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-6">
@@ -68,17 +82,17 @@ export default async function AdminDashboard() {
 
       {/* Recent bookings */}
       <DashCard title="Recent bookings" action={{ href: "/admin/bookings", label: "All bookings" }}>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+        <div className="-mx-5 overflow-x-auto px-5">
+          <table className="w-full min-w-[640px] text-sm">
             <thead>
               <tr className="border-b border-ink/[0.08] text-left text-xs uppercase tracking-wide text-ink-500">
-                <th className="pb-2.5 pr-4 font-semibold">ID</th>
-                <th className="pb-2.5 pr-4 font-semibold">Customer</th>
-                <th className="pb-2.5 pr-4 font-semibold">Worker</th>
-                <th className="pb-2.5 pr-4 font-semibold">Service</th>
-                <th className="pb-2.5 pr-4 font-semibold">Date</th>
-                <th className="pb-2.5 pr-4 font-semibold">Status</th>
-                <th className="pb-2.5 text-right font-semibold">Amount</th>
+                <th className="whitespace-nowrap pb-2.5 pr-4 font-semibold">ID</th>
+                <th className="whitespace-nowrap pb-2.5 pr-4 font-semibold">Customer</th>
+                <th className="whitespace-nowrap pb-2.5 pr-4 font-semibold">Worker</th>
+                <th className="whitespace-nowrap pb-2.5 pr-4 font-semibold">Service</th>
+                <th className="whitespace-nowrap pb-2.5 pr-4 font-semibold">Date</th>
+                <th className="whitespace-nowrap pb-2.5 pr-4 font-semibold">Status</th>
+                <th className="whitespace-nowrap pb-2.5 text-right font-semibold">Amount</th>
               </tr>
             </thead>
             <tbody>
@@ -86,13 +100,13 @@ export default async function AdminDashboard() {
                 const s = STATUS_META[b.status];
                 return (
                   <tr key={b.id} className="border-b border-ink/[0.05] last:border-0">
-                    <td className="py-3 pr-4 font-medium text-ink">{b.id}</td>
-                    <td className="py-3 pr-4 text-ink-700">{b.customerName}</td>
-                    <td className="py-3 pr-4 text-ink-700">{b.workerName}</td>
-                    <td className="py-3 pr-4 text-ink-600">{b.service}</td>
-                    <td className="py-3 pr-4 text-ink-600">{formatDate(b.date)}</td>
+                    <td className="whitespace-nowrap py-3 pr-4 font-medium text-ink">{b.id}</td>
+                    <td className="whitespace-nowrap py-3 pr-4 text-ink-700">{b.customerName}</td>
+                    <td className="whitespace-nowrap py-3 pr-4 text-ink-700">{b.workerName}</td>
+                    <td className="whitespace-nowrap py-3 pr-4 text-ink-600">{b.service}</td>
+                    <td className="whitespace-nowrap py-3 pr-4 text-ink-600">{formatDate(b.date)}</td>
                     <td className="py-3 pr-4"><StatusBadge label={s.label} className={s.className} /></td>
-                    <td className="py-3 text-right font-semibold text-ink">{formatINR(b.estimatedPrice)}</td>
+                    <td className="whitespace-nowrap py-3 text-right font-semibold text-ink">{formatINR(b.estimatedPrice)}</td>
                   </tr>
                 );
               })}

@@ -73,12 +73,12 @@ export default async function HomePage() {
               <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
               Trusted by thousands across Delhi-NCR
             </span>
-            <h1 className="font-display text-[36px] font-extrabold leading-[1.05] tracking-tight text-ink text-balance sm:text-[52px]">
+            <h1 className="font-display text-[30px] font-extrabold leading-[1.08] tracking-tight text-ink text-balance min-[400px]:text-[34px] sm:text-[44px] lg:text-[52px]">
               Har Kaam Ke Liye,
               <br />
               <span className="text-amber-600">Sahi Insaan.</span>
             </h1>
-            <p className="mt-4 max-w-xl text-[16px] leading-relaxed text-ink-700 sm:text-[17px]">
+            <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-ink-700 sm:text-[17px]">
               Electrician se plumber tak, painter se construction worker tak — apne
               aas-paas trusted professionals dhoondhiye. Find trusted workers near you,
               get the job done right.

@@ -44,7 +44,7 @@ export default function ForWorkersPage() {
             <span className="chip mb-5 border border-white/15 bg-white/5 text-ivory-200">
               For Workers
             </span>
-            <h1 className="font-display text-[36px] font-extrabold leading-[1.05] text-balance sm:text-[48px]">
+            <h1 className="font-display text-[30px] font-extrabold leading-[1.08] text-balance min-[400px]:text-[34px] sm:text-[44px] lg:text-[48px]">
               Your skill deserves more work.
             </h1>
             <p className="mt-4 max-w-lg text-[16px] leading-relaxed text-ivory-300/90">

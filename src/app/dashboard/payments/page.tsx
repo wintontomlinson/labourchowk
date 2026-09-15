@@ -22,8 +22,8 @@ export default async function Payments() {
       </div>
 
       <DashCard title="Transaction history">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+        <div className="-mx-5 overflow-x-auto px-5">
+          <table className="w-full min-w-[560px] text-sm">
             <thead>
               <tr className="border-b border-ink/[0.08] text-left text-xs uppercase tracking-wide text-ink-500">
                 <th className="pb-2.5 pr-4 font-semibold">Booking</th>

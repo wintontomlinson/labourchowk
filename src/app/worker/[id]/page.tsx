@@ -57,7 +57,7 @@ export default async function WorkerProfilePage({
         </div>
       </div>
 
-      <div className="container-lc grid gap-8 py-8 lg:grid-cols-[1fr_340px]">
+      <div className="container-lc grid gap-8 py-6 pb-32 sm:py-8 lg:grid-cols-[1fr_340px] lg:pb-8">
         {/* MAIN */}
         <div className="min-w-0 space-y-8">
           {/* Header */}
