@@ -1,5 +1,9 @@
 import path from "node:path";
+import { config as loadEnv } from "dotenv";
 import { defineConfig } from "prisma/config";
+
+// Prisma 6 no longer auto-loads .env when a config file is present, so load it here.
+loadEnv();
 
 /**
  * Prisma configuration (replaces the deprecated `package.json#prisma` block).
